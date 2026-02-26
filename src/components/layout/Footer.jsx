@@ -1,19 +1,20 @@
 import { Link } from "react-router-dom";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import skillmedhaLogo from "@/assets/skillmedha-logo.png";
 
 const footerLinks = {
   about: [
     { label: "About Us", to: "/about" },
     { label: "Learner Stories", to: "#" },
     { label: "Careers", to: "#" },
-    { label: "Press", to: "#" },
+    // { label: "Press", to: "#" },
     { label: "Leadership", to: "#" },
-    { label: "Contact Us", to: "/contact" },
+    { label: "Contact Us", to: "#contact" },
   ],
   categories: [
     { label: "Development", to: "/courses" },
     { label: "Business", to: "/courses" },
-    { label: "Finance & Accounting", to: "/courses", accent: true },
+    { label: "Finance & Accounting", to: "/courses", },
     { label: "IT & Software", to: "/courses" },
     { label: "Office Productivity", to: "/courses" },
     { label: "Design", to: "/courses" },
@@ -29,7 +30,7 @@ const footerLinks = {
   ],
   support: [
     { label: "Documentation", to: "#" },
-    { label: "FAQS", to: "/contact" },
+    { label: "FAQS", to: "/faq" },
     { label: "Dashboard", to: "#" },
     { label: "Contact", to: "/contact" },
   ],
@@ -44,9 +45,7 @@ export default function Footer() {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between border-b border-primary-dark-foreground/10 py-6">
           <Link to="/" className="flex items-center gap-2 mb-4 md:mb-0">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-primary">
-              <span className="text-lg font-bold text-primary-foreground">S</span>
-            </div>
+            <img src={skillmedhaLogo} alt="SkillMedha" className="h-9 w-auto" />
             <span className="text-lg font-bold">SkillMedha</span>
           </Link>
           <div className="flex items-center gap-4">
@@ -84,9 +83,8 @@ export default function Footer() {
                 <li key={l.label}>
                   <Link
                     to={l.to}
-                    className={`text-sm transition-colors hover:text-primary-dark-foreground ${
-                      l.accent ? "text-primary" : "text-primary-dark-foreground/60"
-                    }`}
+                    className={`text-sm transition-colors hover:text-primary-dark-foreground ${l.accent ? "text-primary" : "text-primary-dark-foreground/60"
+                      }`}
                   >
                     {l.label}
                   </Link>

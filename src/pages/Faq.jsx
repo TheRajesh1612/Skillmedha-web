@@ -22,13 +22,13 @@ const faqs = [
   { q: "Do You Offer Discounts For Non-Profits?", a: "Yes, we offer special pricing for non-profit organizations. Please contact us with your organization details to learn more." },
 ];
 
-export default function Contact() {
+export default function Faq() {
   const [openFaq, setOpenFaq] = useState(0);
 
   return (
     <Layout>
       {/* Hero */}
-      <section className="bg-gradient-hero py-16">
+      {/* <section className="bg-gradient-hero py-16">
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
             <motion.div initial="hidden" animate="visible" variants={fadeUp}>
@@ -68,6 +68,44 @@ export default function Contact() {
             </motion.div>
           </div>
         </div>
+      </section> */}
+
+      {/* FAQs */}
+      <section className="bg-muted bg-gradient-hero py-16">
+        <div className="container mx-auto px-4 lg:px-8 max-w-3xl">
+          <motion.div className="mb-10 text-center" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+            <h2 className="mb-2 text-2xl font-bold text-primary-dark-foreground">Frequently Asked Questions.</h2>
+            <p className="text-sm text-primary-dark-foreground/60">Find answers to common questions about our platform</p>
+          </motion.div>
+          <div className="space-y-3">
+            {faqs.map((faq, i) => (
+              <motion.div
+                key={i}
+                className="rounded-2xl bg-card shadow-card overflow-hidden"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.4, delay: i * 0.05 } } }}
+              >
+                <button
+                  onClick={() => setOpenFaq(openFaq === i ? -1 : i)}
+                  className="flex w-full items-center gap-4 px-6 py-4 text-left"
+                >
+                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${openFaq === i ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                    }`}>
+                    {openFaq === i ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+                  </div>
+                  <span className="text-sm font-semibold text-foreground">{faq.q}</span>
+                </button>
+                {openFaq === i && (
+                  <div className="px-6 pb-5 pl-[4.5rem]">
+                    <p className="text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
       </section>
 
       {/* Offices */}
@@ -87,44 +125,6 @@ export default function Contact() {
         </div>
       </section>
 
-      {/* FAQs */}
-      <section className="bg-muted py-16">
-        <div className="container mx-auto px-4 lg:px-8 max-w-3xl">
-          <motion.div className="mb-10 text-center" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
-            <h2 className="mb-2 text-2xl font-bold text-foreground">Frequently Asked Questions.</h2>
-            <p className="text-sm text-muted-foreground">Find answers to common questions about our platform</p>
-          </motion.div>
-          <div className="space-y-3">
-            {faqs.map((faq, i) => (
-              <motion.div
-                key={i}
-                className="rounded-2xl bg-card shadow-card overflow-hidden"
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.4, delay: i * 0.05 } } }}
-              >
-                <button
-                  onClick={() => setOpenFaq(openFaq === i ? -1 : i)}
-                  className="flex w-full items-center gap-4 px-6 py-4 text-left"
-                >
-                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors ${
-                    openFaq === i ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
-                  }`}>
-                    {openFaq === i ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-                  </div>
-                  <span className="text-sm font-semibold text-foreground">{faq.q}</span>
-                </button>
-                {openFaq === i && (
-                  <div className="px-6 pb-5 pl-[4.5rem]">
-                    <p className="text-sm text-muted-foreground leading-relaxed">{faq.a}</p>
-                  </div>
-                )}
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
     </Layout>
   );
 }
