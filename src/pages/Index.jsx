@@ -154,13 +154,13 @@ export default function Index() {
         <div className="container mx-auto px-4 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-16 lg:py-24">
             <motion.div initial="hidden" animate="visible" variants={fadeUp}>
-              <h1 className="mb-6 text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-primary-dark-foreground">
+              <h1 className="mb-6 text-2xl sm:text-4xl lg:text-6xl font-bold leading-tight text-primary-dark-foreground">
                 Learn New Skills Online{" "}
                 <br />
                 With Top{" "}
                 <span className="text-primary underline decoration-primary decoration-2 underline-offset-4">Educators</span>
               </h1>
-              <p className="mb-8 max-w-lg text-base text-primary-dark-foreground/60">
+              <p className="mb-8 max-w-lg text-sm md:text-base text-primary-dark-foreground/60">
                 Build skills with industry-certified courses, live mentorship, and career-focused programs from top instructors.
               </p>
               <div className="flex flex-wrap gap-4">
