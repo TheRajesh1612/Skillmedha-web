@@ -101,7 +101,7 @@ export default function Header() {
   }, [navigate]);
 
   return (
-    <header className="sticky top-0 z-50 bg-primary-dark shadow-lg">
+    <header className="fixed w-full top-0 z-50 bg-primary-dark shadow-lg">
       <div className="container mx-auto flex items-center px-4 py-3 lg:px-8 gap-6">
 
         {/* ── Logo ── */}
