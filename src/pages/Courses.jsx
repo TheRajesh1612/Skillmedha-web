@@ -8,8 +8,15 @@ import {
   Clock,
   ChevronDown,
   X,
+  Check,
+  Heart
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
 import {
   CATEGORIES,
@@ -21,63 +28,114 @@ import {
 
 /* ──────────────────── mini card ──────────────────── */
 function CourseCard2({ course, index }) {
+  const cardContent = (
+    <div className="h-full overflow-hidden rounded-2xl bg-card border border-border/40 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 flex flex-col">
+      {/* thumbnail */}
+      <div className="relative overflow-hidden">
+        <img
+          src={course.image}
+          alt={course.title}
+          className="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+        {/* dark overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      </div>
+
+      {/* body */}
+      <div className="flex flex-col flex-1 p-5">
+        <p className={`mb-1 text-xs font-bold tracking-widest uppercase ${CATEGORY_COLORS[course.category] ?? "text-primary"}`}>
+          {course.category}
+        </p>
+        <h3 className="mb-3 text-sm font-semibold leading-snug text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+          {course.title}
+        </h3>
+
+        {/* level + duration */}
+        <div className="mb-4 flex items-center gap-3">
+          <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${LEVEL_BADGE[course.level]}`}>
+            {course.level}
+          </span>
+          <span className="flex items-center gap-1 text-xs text-muted-foreground">
+            <Clock className="h-3.5 w-3.5" />
+            {course.weeks} weeks
+          </span>
+        </div>
+
+        {/* spacer */}
+        <div className="mt-auto" />
+
+        {/* rating + enroll */}
+        <div className="flex items-center justify-between border-t border-border/40 pt-3">
+          <div className="flex items-center gap-1">
+            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+            <span className="text-sm font-semibold text-foreground">{course.rating}</span>
+            <span className="text-xs text-muted-foreground">({course.reviews.toLocaleString()})</span>
+          </div>
+          <span className="text-sm font-semibold text-primary group-hover:underline">
+            Enroll →
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.04 }}
     >
-      <Link to={`/course/${course.id}`} state={{ course }} className="group block h-full">
-        <div className="h-full overflow-hidden rounded-2xl bg-card border border-border/40 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 flex flex-col">
-          {/* thumbnail */}
-          <div className="relative overflow-hidden">
-            <img
-              src={course.image}
-              alt={course.title}
-              className="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              loading="lazy"
-            />
-            {/* dark overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      <HoverCard openDelay={200} closeDelay={100}>
+        <HoverCardTrigger asChild>
+          <Link to={`/course/${course.id}`} state={{ course }} className="group block h-full">
+            {cardContent}
+          </Link>
+        </HoverCardTrigger>
+
+        <HoverCardContent side="right" align="start" sideOffset={16} className="w-80 p-5 z-50 rounded-xl shadow-xl border-border bg-card">
+          <h3 className="font-bold text-lg leading-tight mb-2 text-foreground">{course.title}</h3>
+
+          <div className="flex gap-2 mb-2 text-xs font-semibold uppercase">
+            <span className="px-2 py-0.5 rounded bg-primary text-primary-foreground">Premium</span>
+            {course.badge && <span className={`px-2 py-0.5 rounded ${course.badgeColor || 'bg-accent'} text-primary-foreground bg-opacity-90`}>{course.badge}</span>}
           </div>
 
-          {/* body */}
-          <div className="flex flex-col flex-1 p-5">
-            <p className={`mb-1 text-xs font-bold tracking-widest uppercase ${CATEGORY_COLORS[course.category] ?? "text-primary"}`}>
-              {course.category}
-            </p>
-            <h3 className="mb-3 text-sm font-semibold leading-snug text-foreground line-clamp-2 group-hover:text-primary transition-colors">
-              {course.title}
-            </h3>
+          <p className="text-xs text-muted-foreground mb-2">
+            Updated <span className="font-semibold text-foreground">{course.lastUpdated || "February 2026"}</span>
+          </p>
 
-            {/* level + duration */}
-            <div className="mb-4 flex items-center gap-3">
-              <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${LEVEL_BADGE[course.level]}`}>
-                {course.level}
-              </span>
-              <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                <Clock className="h-3.5 w-3.5" />
-                {course.weeks} weeks
-              </span>
-            </div>
+          <p className="text-xs text-muted-foreground mb-3 font-medium">
+            {course.totalDuration || course.duration} · {course.level} Levels · Subtitles
+          </p>
 
-            {/* spacer */}
-            <div className="mt-auto" />
+          <p className="text-sm text-foreground mb-4 line-clamp-3 leading-relaxed">
+            {course.subtitle || "Master this course by building real-world projects. Learn the essential skills to take your career to the next level."}
+          </p>
 
-            {/* rating + enroll */}
-            <div className="flex items-center justify-between border-t border-border/40 pt-3">
-              <div className="flex items-center gap-1">
-                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                <span className="text-sm font-semibold text-foreground">{course.rating}</span>
-                <span className="text-xs text-muted-foreground">({course.reviews.toLocaleString()})</span>
-              </div>
-              <span className="text-sm font-semibold text-primary group-hover:underline">
-                Enroll →
-              </span>
-            </div>
+          <ul className="space-y-3 mb-6">
+            {(course.whatYoullLearn?.length ? course.whatYoullLearn.slice(0, 3) : [
+              "Master the programming language by building unique projects.",
+              "Learn automation, game, app and web development, data science.",
+              "You will be able to program professionally."
+            ]).map((item, i) => (
+              <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground leading-relaxed">
+                <Check className="h-4 w-4 text-foreground shrink-0 mt-0.5" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="flex gap-3">
+            <button className="flex-1 bg-primary text-primary-foreground text-sm font-semibold py-2.5 rounded-lg hover:bg-primary/90 transition-colors">
+              Add to cart
+            </button>
+            <button className="flex items-center justify-center w-11 h-11 rounded-full border border-border text-foreground hover:bg-muted transition-colors shrink-0">
+              <Heart className="h-5 w-5 text-muted-foreground hover:text-red-500 transition-colors" />
+            </button>
           </div>
-        </div>
-      </Link>
+        </HoverCardContent>
+      </HoverCard>
     </motion.div>
   );
 }
