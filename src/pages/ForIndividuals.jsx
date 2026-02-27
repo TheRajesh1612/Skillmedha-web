@@ -40,7 +40,7 @@ const CAT_COLOR = { Development: "text-cyan-400", "Data Science": "text-violet-4
 function CourseCard({ course, index }) {
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: index * 0.04 }}>
-            <Link to="/course/1" className="group block h-full">
+            <Link to={`/course/${index + 1}`} state={{ course }} className="group block h-full">
                 <div className="h-full overflow-hidden rounded-2xl bg-card border border-border/40 shadow-md hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 flex flex-col">
                     <div className="relative overflow-hidden">
                         <img src={course.image} alt={course.title} className="h-44 w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
@@ -96,7 +96,7 @@ export default function ForIndividuals() {
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-400/20"><Users className="h-4 w-4 text-violet-400" /></div>
                             <span className="text-xs font-bold uppercase tracking-widest text-violet-400">Individual Learning</span>
                         </div>
-                        <h1 className="text-4xl font-bold text-primary-dark-foreground mb-2">For Individuals</h1>
+                        <h1 className="text-4xl font-bold text-primary-dark-foreground mb-2">Explore Courses</h1>
                         <p className="text-sm text-primary-dark-foreground/60 max-w-lg">From free beginner tracks to advanced premium programmes — build your personalised career roadmap.</p>
                     </motion.div>
                 </div>

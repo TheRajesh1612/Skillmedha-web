@@ -59,7 +59,9 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {footerLinks.company.map((l) => (
                 <li key={l.label}>
-                  <Link to={l.to} className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
+                  <Link to={l.to}
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
                     {l.label}
                   </Link>
                 </li>
@@ -71,7 +73,9 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {footerLinks.services.map((l) => (
                 <li key={l.label}>
-                  <Link to={l.to} className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
+                  <Link to={l.to}
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
                     {l.label}
                   </Link>
                 </li>
@@ -83,7 +87,9 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {footerLinks.resources.map((l) => (
                 <li key={l.label}>
-                  <Link to={l.to} className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
+                  <Link to={l.to}
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
                     {l.label}
                   </Link>
                 </li>
@@ -93,7 +99,9 @@ export default function Footer() {
             <ul className="space-y-2.5">
               {footerLinks.support.map((l) => (
                 <li key={l.label}>
-                  <Link to={l.to} className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
+                  <Link to={l.to}
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
                     {l.label}
                   </Link>
                 </li>
@@ -121,7 +129,9 @@ export default function Footer() {
           <p className="text-sm text-primary-dark-foreground/50 mb-3 md:mb-0">© 2025 SkillMedha. All Right Reserved.</p>
           <div className="flex flex-wrap items-center gap-4">
             {bottomLinks.map((l) => (
-              <a key={l} href="#" className="text-sm text-primary-dark-foreground/50 transition-colors hover:text-primary-dark-foreground">
+              <a key={l} href="#"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="text-sm text-primary-dark-foreground/50 transition-colors hover:text-primary-dark-foreground">
                 {l}
               </a>
             ))}

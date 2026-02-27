@@ -11,103 +11,13 @@ import {
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 
-import course1 from "@/assets/course-1.jpg";
-import course2 from "@/assets/course-2.jpg";
-import course3 from "@/assets/course-3.jpg";
-import course4 from "@/assets/course-4.jpg";
-import course5 from "@/assets/course-5.jpg";
-import course6 from "@/assets/course-6.jpg";
-import course7 from "@/assets/course-7.jpg";
-import course8 from "@/assets/course-8.jpg";
-import course9 from "@/assets/course-9.jpg";
-import instructor2 from "@/assets/instructor-2.jpg";
-
-/* ─────────────────────── data ─────────────────────── */
-const CATEGORIES = ["All", "Development", "Data Science", "Design", "Cloud", "Marketing", "Security"];
-const LEVELS = ["All", "Beginner", "Intermediate", "Advanced"];
-
-const allCourses = [
-  {
-    image: course1, category: "Development", level: "Intermediate",
-    title: "Full-Stack Web Development with React & Node.js",
-    rating: 4.8, reviews: 2340, weeks: 12,
-    instructor: "Ali Tufan", instructorAvatar: instructor2,
-    price: 79, originalPrice: 179,
-  },
-  {
-    image: course2, category: "Data Science", level: "Beginner",
-    title: "Data Science & Machine Learning Fundamentals",
-    rating: 4.9, reviews: 3120, weeks: 10,
-    instructor: "Sara Khan", instructorAvatar: instructor2,
-    price: 69, originalPrice: 149,
-  },
-  {
-    image: course3, category: "Design", level: "Beginner",
-    title: "UI/UX Design Masterclass",
-    rating: 4.7, reviews: 1890, weeks: 8,
-    instructor: "Jane Cooper", instructorAvatar: instructor2,
-    price: 59, originalPrice: 129,
-  },
-  {
-    image: course4, category: "Cloud", level: "Intermediate",
-    title: "AWS Cloud Practitioner & Solutions Architect",
-    rating: 4.6, reviews: 2100, weeks: 14,
-    instructor: "Robert Fox", instructorAvatar: instructor2,
-    price: 89, originalPrice: 199,
-  },
-  {
-    image: course5, category: "Marketing", level: "Beginner",
-    title: "Digital Marketing Complete Bootcamp 2024",
-    rating: 4.5, reviews: 1760, weeks: 6,
-    instructor: "Jenny Wilson", instructorAvatar: instructor2,
-    price: 49, originalPrice: 99,
-  },
-  {
-    image: course6, category: "Security", level: "Advanced",
-    title: "Ethical Hacking & Cybersecurity Masterclass",
-    rating: 4.8, reviews: 980, weeks: 16,
-    instructor: "Jacob Jones", instructorAvatar: instructor2,
-    price: 99, originalPrice: 219,
-  },
-  {
-    image: course7, category: "Development", level: "Beginner",
-    title: "Python Programming – Zero to Hero",
-    rating: 4.9, reviews: 4210, weeks: 9,
-    instructor: "Ali Tufan", instructorAvatar: instructor2,
-    price: 59, originalPrice: 129,
-  },
-  {
-    image: course8, category: "Data Science", level: "Advanced",
-    title: "Deep Learning & Neural Networks with TensorFlow",
-    rating: 4.7, reviews: 1540, weeks: 18,
-    instructor: "Sara Khan", instructorAvatar: instructor2,
-    price: 89, originalPrice: 189,
-  },
-  {
-    image: course9, category: "Design", level: "Intermediate",
-    title: "Motion Design & After Effects Masterclass",
-    rating: 4.6, reviews: 1230, weeks: 10,
-    instructor: "Jane Cooper", instructorAvatar: instructor2,
-    price: 69, originalPrice: 149,
-  },
-];
-
-/* ─────────────── category colour map ─────────────── */
-const CATEGORY_COLORS = {
-  Development: "text-cyan-400",
-  "Data Science": "text-violet-400",
-  Design: "text-emerald-400",
-  Cloud: "text-sky-400",
-  Marketing: "text-amber-400",
-  Security: "text-rose-400",
-};
-
-/* ─────────────────── level badge ─────────────────── */
-const LEVEL_BADGE = {
-  Beginner: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-  Intermediate: "bg-amber-500/20   text-amber-400   border border-amber-500/30",
-  Advanced: "bg-rose-500/20    text-rose-400    border border-rose-500/30",
-};
+import {
+  CATEGORIES,
+  LEVELS,
+  allCourses,
+  CATEGORY_COLORS,
+  LEVEL_BADGE,
+} from "@/data/courses";
 
 /* ──────────────────── mini card ──────────────────── */
 function CourseCard2({ course, index }) {
@@ -117,7 +27,7 @@ function CourseCard2({ course, index }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.04 }}
     >
-      <Link to="/course/1" className="group block h-full">
+      <Link to={`/course/${course.id}`} state={{ course }} className="group block h-full">
         <div className="h-full overflow-hidden rounded-2xl bg-card border border-border/40 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 flex flex-col">
           {/* thumbnail */}
           <div className="relative overflow-hidden">
