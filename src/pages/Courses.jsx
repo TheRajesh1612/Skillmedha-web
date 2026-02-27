@@ -8,166 +8,134 @@ import {
   Clock,
   ChevronDown,
   X,
+  Check,
+  Heart
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 
-import course1 from "@/assets/course-1.jpg";
-import course2 from "@/assets/course-2.jpg";
-import course3 from "@/assets/course-3.jpg";
-import course4 from "@/assets/course-4.jpg";
-import course5 from "@/assets/course-5.jpg";
-import course6 from "@/assets/course-6.jpg";
-import course7 from "@/assets/course-7.jpg";
-import course8 from "@/assets/course-8.jpg";
-import course9 from "@/assets/course-9.jpg";
-import instructor2 from "@/assets/instructor-2.jpg";
-
-/* ─────────────────────── data ─────────────────────── */
-const CATEGORIES = ["All", "Development", "Data Science", "Design", "Cloud", "Marketing", "Security"];
-const LEVELS = ["All", "Beginner", "Intermediate", "Advanced"];
-
-const allCourses = [
-  {
-    image: course1, category: "Development", level: "Intermediate",
-    title: "Full-Stack Web Development with React & Node.js",
-    rating: 4.8, reviews: 2340, weeks: 12,
-    instructor: "Ali Tufan", instructorAvatar: instructor2,
-    price: 79, originalPrice: 179,
-  },
-  {
-    image: course2, category: "Data Science", level: "Beginner",
-    title: "Data Science & Machine Learning Fundamentals",
-    rating: 4.9, reviews: 3120, weeks: 10,
-    instructor: "Sara Khan", instructorAvatar: instructor2,
-    price: 69, originalPrice: 149,
-  },
-  {
-    image: course3, category: "Design", level: "Beginner",
-    title: "UI/UX Design Masterclass",
-    rating: 4.7, reviews: 1890, weeks: 8,
-    instructor: "Jane Cooper", instructorAvatar: instructor2,
-    price: 59, originalPrice: 129,
-  },
-  {
-    image: course4, category: "Cloud", level: "Intermediate",
-    title: "AWS Cloud Practitioner & Solutions Architect",
-    rating: 4.6, reviews: 2100, weeks: 14,
-    instructor: "Robert Fox", instructorAvatar: instructor2,
-    price: 89, originalPrice: 199,
-  },
-  {
-    image: course5, category: "Marketing", level: "Beginner",
-    title: "Digital Marketing Complete Bootcamp 2024",
-    rating: 4.5, reviews: 1760, weeks: 6,
-    instructor: "Jenny Wilson", instructorAvatar: instructor2,
-    price: 49, originalPrice: 99,
-  },
-  {
-    image: course6, category: "Security", level: "Advanced",
-    title: "Ethical Hacking & Cybersecurity Masterclass",
-    rating: 4.8, reviews: 980, weeks: 16,
-    instructor: "Jacob Jones", instructorAvatar: instructor2,
-    price: 99, originalPrice: 219,
-  },
-  {
-    image: course7, category: "Development", level: "Beginner",
-    title: "Python Programming – Zero to Hero",
-    rating: 4.9, reviews: 4210, weeks: 9,
-    instructor: "Ali Tufan", instructorAvatar: instructor2,
-    price: 59, originalPrice: 129,
-  },
-  {
-    image: course8, category: "Data Science", level: "Advanced",
-    title: "Deep Learning & Neural Networks with TensorFlow",
-    rating: 4.7, reviews: 1540, weeks: 18,
-    instructor: "Sara Khan", instructorAvatar: instructor2,
-    price: 89, originalPrice: 189,
-  },
-  {
-    image: course9, category: "Design", level: "Intermediate",
-    title: "Motion Design & After Effects Masterclass",
-    rating: 4.6, reviews: 1230, weeks: 10,
-    instructor: "Jane Cooper", instructorAvatar: instructor2,
-    price: 69, originalPrice: 149,
-  },
-];
-
-/* ─────────────── category colour map ─────────────── */
-const CATEGORY_COLORS = {
-  Development: "text-cyan-400",
-  "Data Science": "text-violet-400",
-  Design: "text-emerald-400",
-  Cloud: "text-sky-400",
-  Marketing: "text-amber-400",
-  Security: "text-rose-400",
-};
-
-/* ─────────────────── level badge ─────────────────── */
-const LEVEL_BADGE = {
-  Beginner: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-  Intermediate: "bg-amber-500/20   text-amber-400   border border-amber-500/30",
-  Advanced: "bg-rose-500/20    text-rose-400    border border-rose-500/30",
-};
+import {
+  CATEGORIES,
+  LEVELS,
+  allCourses,
+  CATEGORY_COLORS,
+  LEVEL_BADGE,
+} from "@/data/courses";
 
 /* ──────────────────── mini card ──────────────────── */
 function CourseCard2({ course, index }) {
+  const cardContent = (
+    <div className="h-full overflow-hidden rounded-2xl bg-card border border-border/40 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 flex flex-col">
+      {/* thumbnail */}
+      <div className="relative overflow-hidden">
+        <img
+          src={course.image}
+          alt={course.title}
+          className="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          loading="lazy"
+        />
+        {/* dark overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      </div>
+
+      {/* body */}
+      <div className="flex flex-col flex-1 p-5">
+        <p className={`mb-1 text-xs font-bold tracking-widest uppercase ${CATEGORY_COLORS[course.category] ?? "text-primary"}`}>
+          {course.category}
+        </p>
+        <h3 className="mb-3 text-sm font-semibold leading-snug text-foreground line-clamp-2 group-hover:text-primary transition-colors">
+          {course.title}
+        </h3>
+
+        {/* level + duration */}
+        <div className="mb-4 flex items-center gap-3">
+          <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${LEVEL_BADGE[course.level]}`}>
+            {course.level}
+          </span>
+          <span className="flex items-center gap-1 text-xs text-muted-foreground">
+            <Clock className="h-3.5 w-3.5" />
+            {course.weeks} weeks
+          </span>
+        </div>
+
+        {/* spacer */}
+        <div className="mt-auto" />
+
+        {/* rating + enroll */}
+        <div className="flex items-center justify-between border-t border-border/40 pt-3">
+          <div className="flex items-center gap-1">
+            <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+            <span className="text-sm font-semibold text-foreground">{course.rating}</span>
+            <span className="text-xs text-muted-foreground">({course.reviews.toLocaleString()})</span>
+          </div>
+          <span className="text-sm font-semibold text-primary group-hover:underline">
+            Enroll →
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: index * 0.04 }}
     >
-      <Link to="/course/1" className="group block h-full">
-        <div className="h-full overflow-hidden rounded-2xl bg-card border border-border/40 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 flex flex-col">
-          {/* thumbnail */}
-          <div className="relative overflow-hidden">
-            <img
-              src={course.image}
-              alt={course.title}
-              className="h-44 w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              loading="lazy"
-            />
-            {/* dark overlay */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+      <HoverCard openDelay={200} closeDelay={100}>
+        <HoverCardTrigger asChild>
+          <Link to={`/course/${course.id}`} state={{ course }} className="group block h-full">
+            {cardContent}
+          </Link>
+        </HoverCardTrigger>
+
+        <HoverCardContent side="right" align="start" sideOffset={16} className="w-80 p-5 z-50 rounded-xl shadow-xl border-border bg-card">
+          <h3 className="font-bold text-lg leading-tight mb-2 text-foreground">{course.title}</h3>
+
+          <div className="flex gap-2 mb-2 text-xs font-semibold uppercase">
+            <span className="px-2 py-0.5 rounded bg-primary text-primary-foreground">Premium</span>
+            {course.badge && <span className={`px-2 py-0.5 rounded ${course.badgeColor || 'bg-accent'} text-primary-foreground bg-opacity-90`}>{course.badge}</span>}
           </div>
 
-          {/* body */}
-          <div className="flex flex-col flex-1 p-5">
-            <p className={`mb-1 text-xs font-bold tracking-widest uppercase ${CATEGORY_COLORS[course.category] ?? "text-primary"}`}>
-              {course.category}
-            </p>
-            <h3 className="mb-3 text-sm font-semibold leading-snug text-foreground line-clamp-2 group-hover:text-primary transition-colors">
-              {course.title}
-            </h3>
+          <p className="text-xs text-muted-foreground mb-2">
+            Updated <span className="font-semibold text-foreground">{course.lastUpdated || "February 2026"}</span>
+          </p>
 
-            {/* level + duration */}
-            <div className="mb-4 flex items-center gap-3">
-              <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${LEVEL_BADGE[course.level]}`}>
-                {course.level}
-              </span>
-              <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                <Clock className="h-3.5 w-3.5" />
-                {course.weeks} weeks
-              </span>
-            </div>
+          <p className="text-xs text-muted-foreground mb-3 font-medium">
+            {course.totalDuration || course.duration} · {course.level} Levels · Subtitles
+          </p>
 
-            {/* spacer */}
-            <div className="mt-auto" />
+          <p className="text-sm text-foreground mb-4 line-clamp-3 leading-relaxed">
+            {course.subtitle || "Master this course by building real-world projects. Learn the essential skills to take your career to the next level."}
+          </p>
 
-            {/* rating + enroll */}
-            <div className="flex items-center justify-between border-t border-border/40 pt-3">
-              <div className="flex items-center gap-1">
-                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                <span className="text-sm font-semibold text-foreground">{course.rating}</span>
-                <span className="text-xs text-muted-foreground">({course.reviews.toLocaleString()})</span>
-              </div>
-              <span className="text-sm font-semibold text-primary group-hover:underline">
-                Enroll →
-              </span>
-            </div>
+          <ul className="space-y-3 mb-6">
+            {(course.whatYoullLearn?.length ? course.whatYoullLearn.slice(0, 3) : [
+              "Master the programming language by building unique projects.",
+              "Learn automation, game, app and web development, data science.",
+              "You will be able to program professionally."
+            ]).map((item, i) => (
+              <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground leading-relaxed">
+                <Check className="h-4 w-4 text-foreground shrink-0 mt-0.5" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+
+          <div className="flex gap-3">
+            <button className="flex-1 bg-primary text-primary-foreground text-sm font-semibold py-2.5 rounded-lg hover:bg-primary/90 transition-colors">
+              Add to cart
+            </button>
+            <button className="flex items-center justify-center w-11 h-11 rounded-full border border-border text-foreground hover:bg-muted transition-colors shrink-0">
+              <Heart className="h-5 w-5 text-muted-foreground hover:text-red-500 transition-colors" />
+            </button>
           </div>
-        </div>
-      </Link>
+        </HoverCardContent>
+      </HoverCard>
     </motion.div>
   );
 }

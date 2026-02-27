@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   GraduationCap, Play, BookOpen, Star, CheckCircle, ArrowRight,
@@ -28,17 +28,7 @@ import blog1 from "@/assets/blog-1.jpg";
 import blog2 from "@/assets/blog-2.jpg";
 import blog3 from "@/assets/blog-3.jpg";
 
-// ─── data ─────────────────────────────────────────────────────────────────────
-const courses = [
-  { image: course1, title: "Complete Python Bootcamp From Zero To Hero In Python", rating: 4.5, reviews: 1991, lessons: 6, duration: "3h 56m", level: "Beginner", instructor: "Ali Tufan", instructorAvatar: instructor2, price: 79, originalPrice: 179, badge: "POPULAR", badgeColor: "bg-primary" },
-  { image: course2, title: "Angular - The Complete Guide (2024 Edition)", rating: 4.5, reviews: 1991, lessons: 6, duration: "3h 50m", level: "Beginner", instructor: "Ali Tufan", instructorAvatar: instructor2, price: 79, originalPrice: 179, badge: "NEW", badgeColor: "bg-accent" },
-  { image: course3, title: "The Ultimate Drawing Course Beginner To Advanced", rating: 4.5, reviews: 1991, lessons: 6, duration: "3h 56m", level: "Beginner", instructor: "Ali Tufan", instructorAvatar: instructor2, price: 79, originalPrice: 179, badge: "BEST SELLER", badgeColor: "bg-primary" },
-  { image: course4, title: "Instagram Marketing 2024: Complete Guide To Growth", rating: 4.5, reviews: 1991, lessons: 6, duration: "3h 56m", level: "Beginner", instructor: "Ali Tufan", instructorAvatar: instructor2, price: 79, originalPrice: 179 },
-  { image: course5, title: "Complete Blender Creator: Learn 3D Modelling For Beginners", rating: 4.5, reviews: 1991, lessons: 6, duration: "3h 55m", level: "Beginner", instructor: "Ali Tufan", instructorAvatar: instructor2, price: 79, originalPrice: 179, badge: "BEST SELLER", badgeColor: "bg-primary" },
-  { image: course6, title: "The Complete Financial Analyst Training & Investing Course", rating: 4.5, reviews: 1991, lessons: 6, duration: "3h 56m", level: "Beginner", instructor: "Ali Tufan", instructorAvatar: instructor2, price: 79, originalPrice: 179 },
-  { image: course7, title: "Learn Figma - UI/UX Design Essential Training", rating: 4.5, reviews: 1991, lessons: 6, duration: "2h 56m", level: "Beginner", instructor: "Ali Tufan", instructorAvatar: instructor2, price: 79, originalPrice: 179, badge: "NEW", badgeColor: "bg-accent" },
-  { image: course8, title: "Photography Masterclass: A Complete Guide To Photography", rating: 4.5, reviews: 1991, lessons: 6, duration: "3h 50m", level: "Beginner", instructor: "Ali Tufan", instructorAvatar: instructor2, price: 79, originalPrice: 179, badge: "BEST SELLER", badgeColor: "bg-primary" },
-];
+import { allCourses as courses } from "@/data/courses";
 
 const instructors = [
   { image: instructor1, name: "Priya Sharma", role: "Frontend Developer", rating: 4.9, students: 483, courses: 15 },
@@ -137,6 +127,29 @@ function ContactForm() {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function Index() {
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!location.state?.scrollTo) return;
+    const target = location.state.scrollTo;
+
+    // Delay lets the page finish rendering before we try to scroll
+    const timer = setTimeout(() => {
+      if (target === "top") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        const el = document.getElementById(target);
+        if (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY - 72;
+          window.scrollTo({ top, behavior: "smooth" });
+        }
+      }
+    }, 150);
+
+    return () => clearTimeout(timer);
+  }, [location.state]);
+
   return (
     <Layout>
 
@@ -173,16 +186,16 @@ export default function Index() {
               </div>
             </motion.div>
 
-            <div className="relative hidden lg:block">
+            <div className="relative mt-8 lg:mt-0 min-h-[380px] sm:min-h-[420px] lg:min-h-0">
               <motion.div className="relative z-10" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }}>
-                <img src={heroPerson1} alt="Students learning" className="rounded-2xl shadow-2xl w-80 ml-auto" />
+                <img src={heroPerson1} alt="Students learning" className="rounded-2xl shadow-2xl w-full max-w-sm mx-auto lg:w-80 lg:ml-auto lg:mx-0" />
               </motion.div>
-              <motion.div className="absolute -bottom-4 right-60 z-20" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5, duration: 0.6 }}>
+              <motion.div className="hidden lg:block absolute -bottom-4 right-60 z-20" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5, duration: 0.6 }}>
                 <img src={heroPerson2} alt="Student" className="h-48 w-36 rounded-2xl object-cover shadow-xl" />
               </motion.div>
 
               {/* Floating cards */}
-              <motion.div className="absolute left-0 bottom-20 z-30 animate-float" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>
+              <motion.div className="absolute left-0 bottom-20 z-30 animate-float sm:bottom-40 xl:left-40" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>
                 <div className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 shadow-card-hover">
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                     <GraduationCap className="h-5 w-5 text-primary" />
@@ -354,14 +367,14 @@ export default function Index() {
           <motion.div className="mt-16" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
             <div className="mb-6 flex items-center justify-between">
               <h3 className="text-xl font-bold text-foreground">Popular Courses</h3>
-              <Link to="/courses" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+              <Link to="/for-individuals" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
                 View All <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {courses.slice(0, 4).map((course, i) => (
                 <motion.div key={i} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.5, delay: i * 0.05 } } }}>
-                  <Link to="/course/1"><CourseCard {...course} /></Link>
+                  <Link to={`/course/${course.id}`} state={{ course }}><CourseCard {...course} /></Link>
                 </motion.div>
               ))}
             </div>

@@ -3,36 +3,26 @@ import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import skillmedhaLogo from "@/assets/skillmedha-logo.png";
 
 const footerLinks = {
-  about: [
+  company: [
+    { label: "Home", to: "/" },
     { label: "About Us", to: "/about" },
-    { label: "Learner Stories", to: "#" },
-    { label: "Careers", to: "#" },
-    // { label: "Press", to: "#" },
-    { label: "Leadership", to: "#" },
-    { label: "Contact Us", to: "#contact" },
+    { label: "Courses", to: "/courses" },
+    { label: "FAQ", to: "/faq" },
+    { label: "Contact Us", to: "/#contact" },
   ],
-  categories: [
-    { label: "Development", to: "/courses" },
-    { label: "Business", to: "/courses" },
-    { label: "Finance & Accounting", to: "/courses", },
-    { label: "IT & Software", to: "/courses" },
-    { label: "Office Productivity", to: "/courses" },
-    { label: "Design", to: "/courses" },
-    { label: "Marketing", to: "/courses" },
+  services: [
+    { label: "Free Trainings", to: "/free-trainings" },
+    { label: "For Individuals", to: "/for-individuals" },
+    { label: "For Corporates", to: "/for-corporates" },
+    { label: "For Campus", to: "/for-campus" },
   ],
-  categories2: [
-    { label: "Lifestyle", to: "/courses" },
-    { label: "Photography & Video", to: "/courses" },
-    { label: "Health & Fitness", to: "/courses" },
-    { label: "Music", to: "/courses" },
-    { label: "UX Design", to: "/courses" },
-    { label: "Seo", to: "/courses" },
+  resources: [
+    { label: "Knowledge Hub", to: "/knowledge-hub" },
+    { label: "Courses", to: "/courses" },
   ],
   support: [
-    { label: "Documentation", to: "#" },
-    { label: "FAQS", to: "/faq" },
-    { label: "Dashboard", to: "#" },
-    { label: "Contact", to: "/contact" },
+    { label: "FAQ", to: "/faq" },
+    { label: "Contact", to: "/#contact" },
   ],
 };
 
@@ -65,11 +55,13 @@ export default function Footer() {
         {/* Links grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 py-10">
           <div>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider">About</h4>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider">Company</h4>
             <ul className="space-y-2.5">
-              {footerLinks.about.map((l) => (
+              {footerLinks.company.map((l) => (
                 <li key={l.label}>
-                  <Link to={l.to} className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
+                  <Link to={l.to}
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
                     {l.label}
                   </Link>
                 </li>
@@ -77,24 +69,13 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider">Categories</h4>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider">Services</h4>
             <ul className="space-y-2.5">
-              {footerLinks.categories.map((l) => (
+              {footerLinks.services.map((l) => (
                 <li key={l.label}>
-                  <Link
-                    to={l.to}
-                    className={`text-sm transition-colors hover:text-primary-dark-foreground ${l.accent ? "text-primary" : "text-primary-dark-foreground/60"
-                      }`}
-                  >
-                    {l.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            <ul className="mt-2.5 space-y-2.5">
-              {footerLinks.categories2.map((l) => (
-                <li key={l.label}>
-                  <Link to={l.to} className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
+                  <Link to={l.to}
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
                     {l.label}
                   </Link>
                 </li>
@@ -102,11 +83,25 @@ export default function Footer() {
             </ul>
           </div>
           <div>
-            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider">Support</h4>
+            <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider">Resources</h4>
+            <ul className="space-y-2.5">
+              {footerLinks.resources.map((l) => (
+                <li key={l.label}>
+                  <Link to={l.to}
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <h4 className="mt-6 mb-4 text-sm font-semibold uppercase tracking-wider">Support</h4>
             <ul className="space-y-2.5">
               {footerLinks.support.map((l) => (
                 <li key={l.label}>
-                  <Link to={l.to} className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
+                  <Link to={l.to}
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="text-sm text-primary-dark-foreground/60 transition-colors hover:text-primary-dark-foreground">
                     {l.label}
                   </Link>
                 </li>
@@ -116,13 +111,13 @@ export default function Footer() {
           <div>
             <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider">Get In Touch</h4>
             <p className="mb-4 text-sm text-primary-dark-foreground/60">We don't send spam so don't worry.</p>
-            <div className="flex rounded-full bg-primary-dark-foreground/10 p-1">
+            <div className="flex flex-col gap-2">
               <input
                 type="email"
                 placeholder="Email..."
-                className="flex-1 bg-transparent px-4 text-sm text-primary-dark-foreground placeholder:text-primary-dark-foreground/40 outline-none"
+                className="w-full rounded-full bg-primary-dark-foreground/10 px-4 py-2 text-sm text-primary-dark-foreground placeholder:text-primary-dark-foreground/40 outline-none"
               />
-              <button className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-transform hover:scale-105">
+              <button className="w-full rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-transform hover:scale-105">
                 Submit
               </button>
             </div>
@@ -134,7 +129,9 @@ export default function Footer() {
           <p className="text-sm text-primary-dark-foreground/50 mb-3 md:mb-0">© 2025 SkillMedha. All Right Reserved.</p>
           <div className="flex flex-wrap items-center gap-4">
             {bottomLinks.map((l) => (
-              <a key={l} href="#" className="text-sm text-primary-dark-foreground/50 transition-colors hover:text-primary-dark-foreground">
+              <a key={l} href="#"
+                onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                className="text-sm text-primary-dark-foreground/50 transition-colors hover:text-primary-dark-foreground">
                 {l}
               </a>
             ))}

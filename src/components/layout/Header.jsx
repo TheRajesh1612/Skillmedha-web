@@ -16,7 +16,7 @@ function scrollToSection(id) {
 // sectionId  → smooth scroll on "/" (or nav to "/" first)
 // dropdown[] → hover reveals sub-links; "to" = React Router route
 const NAV = [
-  { label: "Home", sectionId: "home" },
+  { label: "Home", sectionId: "home", isTop: true },
   { label: "About", sectionId: "about" },
   {
     label: "Services", sectionId: "services",
@@ -60,6 +60,7 @@ export default function Header() {
   const navigate = useNavigate();
   const leaveTimer = useRef(null);
 
+
   // close everything on route change
   useEffect(() => {
     setMobileOpen(false);
@@ -81,17 +82,28 @@ export default function Header() {
     leaveTimer.current = setTimeout(() => setActiveDropdown(null), 150);
   };
 
-  // ── main nav-link click → scroll to section ────────────────────────────────
+  // ── main nav-link click → scroll to section (or top for Home) ────────────
   const handleNavClick = useCallback((item) => {
-    if (!item.sectionId) return;
     setMobileOpen(false);
-    if (location.pathname === "/") {
-      scrollToSection(item.sectionId);
-    } else {
-      navigate("/");
-      setTimeout(() => scrollToSection(item.sectionId), 400);
+    setActiveDropdown(null);
+
+    if (location.pathname !== "/") {
+      // On a different page → navigate home, let Index.jsx useEffect scroll
+      navigate("/", { state: { scrollTo: item.isTop ? "top" : item.sectionId } });
+      return;
     }
+
+    // Already on "/" — wait for mobile menu exit animation (200ms) then scroll
+    const target = item.isTop ? "top" : item.sectionId;
+    setTimeout(() => {
+      if (target === "top") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      } else {
+        scrollToSection(target);
+      }
+    }, 300);
   }, [location.pathname, navigate]);
+
 
   // ── dropdown-item click → route ────────────────────────────────────────────
   const handleDropClick = useCallback((sub) => {
@@ -101,7 +113,7 @@ export default function Header() {
   }, [navigate]);
 
   return (
-    <header className="sticky top-0 z-50 bg-primary-dark shadow-lg">
+    <header className="fixed w-full top-0 z-50 bg-primary-dark shadow-lg">
       <div className="container mx-auto flex items-center px-4 py-3 lg:px-8 gap-6">
 
         {/* ── Logo ── */}
@@ -221,29 +233,42 @@ export default function Header() {
               {NAV.map((item) => (
                 <div key={item.label}>
                   <div className="flex items-center">
-                    <button
-                      onClick={() => {
-                        if (item.dropdown) {
+                    {item.dropdown ? (
+                      // Items with dropdown: button toggles the accordion
+                      <button
+                        onClick={() =>
                           setMobileExpanded(
                             mobileExpanded === item.label ? null : item.label
-                          );
-                        } else {
-                          handleNavClick(item);
+                          )
                         }
-                      }}
-                      className="flex-1 flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-primary-dark-foreground/80 hover:text-white hover:bg-white/5 transition-colors text-left"
-                    >
-                      {item.label}
-                      {item.dropdown && (
+                        className="flex-1 flex items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-primary-dark-foreground/80 hover:text-white hover:bg-white/5 transition-colors text-left"
+                      >
+                        {item.label}
                         <ChevronDown
                           className={`h-4 w-4 transition-transform duration-200 ${mobileExpanded === item.label ? "rotate-180" : ""
                             }`}
                         />
-                      )}
-                    </button>
+                      </button>
+                    ) : (
+                      // Items without dropdown: native anchor — prevents React Router
+                      // from re-navigating "/" and conflicting with the scroll
+                      // <a
+                      //   href="#"
+                      //   onClick={(e) => { e.preventDefault(); handleNavClick(item); }}
+                      //   className="flex-1 flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-primary-dark-foreground/80 hover:text-white hover:bg-white/5 transition-colors"
+                      // >
+                      //   {item.label}
+                      // </a>
+                      <button
+                        onClick={() => handleNavClick(item)}
+                        className="flex-1 flex items-center rounded-lg px-3 py-2.5 text-sm font-medium text-primary-dark-foreground/80 hover:text-white hover:bg-white/5 transition-colors text-left"
+                      >
+                        {item.label}
+                      </button>
+                    )}
                   </div>
 
-                  {/* Mobile sub-items */}
+                  {/* Mobile sub-items — use Link for reliable touch navigation */}
                   <AnimatePresence>
                     {item.dropdown && mobileExpanded === item.label && (
                       <motion.div
@@ -255,14 +280,14 @@ export default function Header() {
                         className="overflow-hidden pl-3"
                       >
                         {item.dropdown.map((sub) => (
-                          <button
+                          <Link
                             key={sub.label}
-                            onClick={() => handleDropClick(sub)}
-                            className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-primary-dark-foreground/60 hover:text-accent transition-colors text-left"
+                            to={sub.to}
+                            className="flex w-full items-center gap-2 rounded-lg px-4 py-2 text-sm text-primary-dark-foreground/60 hover:text-accent transition-colors"
                           >
                             <span className="h-1 w-1 rounded-full bg-accent shrink-0" />
                             {sub.label}
-                          </button>
+                          </Link>
                         ))}
                       </motion.div>
                     )}

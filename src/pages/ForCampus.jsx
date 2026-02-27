@@ -35,7 +35,7 @@ const CAT_COLOR = { Engineering: "text-cyan-400", "Computer Science": "text-viol
 function CourseCard({ course, index }) {
     return (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: index * 0.04 }}>
-            <Link to="/course/1" className="group block h-full">
+            <Link to={`/course/${index + 1}`} state={{ course }} className="group block h-full">
                 <div className="h-full overflow-hidden rounded-2xl bg-card border border-border/40 shadow-md hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 flex flex-col">
                     <div className="relative overflow-hidden">
                         <img src={course.image} alt={course.title} className="h-44 w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
