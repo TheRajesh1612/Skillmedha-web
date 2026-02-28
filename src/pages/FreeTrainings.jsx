@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, SlidersHorizontal, Star, Clock, X, Zap } from "lucide-react";
 import Layout from "@/components/layout/Layout";
+import CourseCard from "@/components/CourseCard";
 
 import course1 from "@/assets/course-1.jpg";
 import course2 from "@/assets/course-2.jpg";
@@ -34,37 +35,7 @@ const CAT_COLOR = {
     "Data Science": "text-emerald-400", Business: "text-sky-400",
 };
 
-function CourseCard({ course, index }) {
-    return (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: index * 0.04 }}>
-            <Link to={`/course/${index + 1}`} state={{ course }} className="group block h-full">
-                <div className="h-full overflow-hidden rounded-2xl bg-card border border-border/40 shadow-md hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 flex flex-col">
-                    <div className="relative overflow-hidden">
-                        <img src={course.image} alt={course.title} className="h-44 w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        <span className="absolute top-3 right-3 rounded-full bg-accent/90 px-2.5 py-0.5 text-[10px] font-bold text-accent-foreground uppercase tracking-wider">FREE</span>
-                    </div>
-                    <div className="flex flex-col flex-1 p-5">
-                        <p className={`mb-1 text-xs font-bold tracking-widest uppercase ${CAT_COLOR[course.category] ?? "text-primary"}`}>{course.category}</p>
-                        <h3 className="mb-3 text-sm font-semibold leading-snug text-foreground line-clamp-2 group-hover:text-primary transition-colors">{course.title}</h3>
-                        <div className="mb-4 flex items-center gap-3">
-                            <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${LEVEL_BADGE[course.level]}`}>{course.level}</span>
-                            <span className="flex items-center gap-1 text-xs text-muted-foreground"><Clock className="h-3.5 w-3.5" />{course.weeks} weeks</span>
-                        </div>
-                        <div className="mt-auto flex items-center justify-between border-t border-border/40 pt-3">
-                            <div className="flex items-center gap-1">
-                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                                <span className="text-sm font-semibold text-foreground">{course.rating}</span>
-                                <span className="text-xs text-muted-foreground">({course.reviews.toLocaleString()})</span>
-                            </div>
-                            <span className="text-sm font-bold text-accent">FREE →</span>
-                        </div>
-                    </div>
-                </div>
-            </Link>
-        </motion.div>
-    );
-}
+
 
 export default function FreeTrainings() {
     const [search, setSearch] = useState("");
@@ -135,7 +106,29 @@ export default function FreeTrainings() {
                 <div className="container mx-auto px-4 lg:px-8">
                     <p className="mb-6 text-sm text-muted-foreground"><span className="font-semibold text-foreground">{filtered.length}</span> free course{filtered.length !== 1 ? "s" : ""} found</p>
                     {filtered.length > 0
-                        ? <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">{filtered.map((c, i) => <CourseCard key={i} course={c} index={i} />)}</div>
+                        ? <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">{filtered.map((c, i) => (
+                            <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: i * 0.04 }}>
+                                <Link to={`/course/${i + 1}`} state={{ course: c }}>
+                                    <CourseCard
+                                        image={c.image}
+                                        title={c.title}
+                                        rating={c.rating}
+                                        reviews={c.reviews}
+                                        lessons={c.weeks}
+                                        duration={`${c.weeks} weeks`}
+                                        level={c.level}
+                                        instructor={c.instructor}
+                                        category={c.category}
+                                        weeks={c.weeks}
+                                        isFree={true}
+                                        price={0}
+                                        originalPrice={0}
+                                        badge="FREE"
+                                        badgeColor="bg-accent"
+                                    />
+                                </Link>
+                            </motion.div>
+                        ))}</div>
                         : <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center py-20 text-center">
                             <Search className="h-12 w-12 text-muted-foreground/30 mb-4" />
                             <p className="text-lg font-semibold text-foreground mb-1">No courses found</p>

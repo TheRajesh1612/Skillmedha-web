@@ -24,10 +24,32 @@ export default function CourseCard({
   lastUpdated,
   totalDuration,
   whatYoullLearn = [],
+  category,
+  weeks,
+  isFree,
   ...props
 }) {
   const id = props.id || null;
-  const courseData = { image, title, rating, reviews, lessons, duration, level, instructor, instructorAvatar, price, originalPrice, badge, badgeColor, subtitle, lastUpdated, totalDuration, whatYoullLearn, ...props };
+  // Strip non-serializable fields (courseIncludes has React icon components) before passing to Link state
+  const { courseIncludes, ...serializableProps } = props;
+  const courseData = { image, title, rating, reviews, lessons, duration, level, instructor, instructorAvatar, price, originalPrice, badge, badgeColor, subtitle, lastUpdated, totalDuration, whatYoullLearn, category, weeks, isFree, ...serializableProps };
+
+  // Determine if the course is free
+  const courseIsFree = isFree || price === 0 || badge === "FREE";
+
+  // Generate dynamic subtitle if not provided
+  const hoverSubtitle = subtitle || `Master ${title} and elevate your career in ${category || "your field"}.`;
+
+  // Generate dynamic "what you'll learn" if not provided
+  const hoverLearnItems = whatYoullLearn?.length ? whatYoullLearn.slice(0, 3) : [
+    `Master the core concepts of ${category || title}.`,
+    `Build real-world projects reflecting ${title}.`,
+    `Learn directly from industry expert ${instructor || "professionals"}.`,
+  ];
+
+  // Dynamic total duration
+  const hoverDuration = totalDuration || duration || (weeks ? `${weeks * 2} hours` : null);
+
   const cardContent = (
     <div className="group overflow-hidden rounded-2xl bg-card shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-1 block h-full flex flex-col">
       <div className="relative overflow-hidden">
@@ -63,12 +85,12 @@ export default function CourseCard({
         </div>
         <div className="mt-auto flex items-center justify-between border-t border-border pt-3">
           <div className="flex items-center gap-2">
-            <img src={instructorAvatar} alt={instructor} className="h-7 w-7 rounded-full object-cover" />
+            {instructorAvatar && <img src={instructorAvatar} alt={instructor} className="h-7 w-7 rounded-full object-cover" />}
             <span className="text-xs text-muted-foreground">{instructor}</span>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground line-through">${originalPrice}</span>
-            <span className="text-sm font-bold text-primary">${price}</span>
+            {originalPrice > 0 && <span className="text-xs text-muted-foreground line-through">₹{(originalPrice * 83).toLocaleString()}</span>}
+            <span className="text-sm font-bold text-primary">{courseIsFree ? "FREE" : `₹${(price * 83).toLocaleString()}`}</span>
           </div>
         </div>
       </div>
@@ -92,31 +114,55 @@ export default function CourseCard({
       <HoverCardContent side="right" align="start" sideOffset={16} className="w-80 p-5 z-50 rounded-xl shadow-xl border-border bg-card">
         <h3 className="font-bold text-lg leading-tight mb-2 text-foreground">{title}</h3>
 
-        <div className="flex gap-2 mb-2 text-xs font-semibold uppercase">
-          <span className="px-2 py-0.5 rounded bg-primary text-primary-foreground">Premium</span>
-          {badge && <span className={`px-2 py-0.5 rounded ${badgeColor} text-primary-foreground bg-opacity-90`}>{badge}</span>}
+        <div className="flex flex-wrap gap-2 mb-2 text-xs font-semibold uppercase">
+          <span className={`px-2 py-0.5 rounded ${courseIsFree ? "bg-accent text-accent-foreground" : "bg-primary text-primary-foreground"}`}>
+            {courseIsFree ? "Free" : "Premium"}
+          </span>
+          {badge && badge !== "FREE" && (
+            <span className={`px-2 py-0.5 rounded ${badgeColor} text-primary-foreground bg-opacity-90`}>{badge}</span>
+          )}
+          {level && (
+            <span className="px-2 py-0.5 rounded bg-muted text-muted-foreground">{level}</span>
+          )}
         </div>
 
-        <p className="text-xs text-muted-foreground mb-2">
-          Updated <span className="font-semibold text-foreground">{lastUpdated || "February 2026"}</span>
-        </p>
+        {(lastUpdated || weeks) && (
+          <p className="text-xs text-muted-foreground mb-2">
+            Updated <span className="font-semibold text-foreground">{lastUpdated || "Recently"}</span>
+          </p>
+        )}
 
         <p className="text-xs text-muted-foreground mb-3 font-medium">
-          {totalDuration || duration} · {level} Levels · Subtitles
+          {[hoverDuration, level && `${level} Level`, "Subtitles"].filter(Boolean).join(" · ")}
         </p>
 
         <p className="text-sm text-foreground mb-4 line-clamp-3 leading-relaxed">
-          {subtitle || "Master this course by building real-world projects. Learn the essential skills to take your career to the next level."}
+          {hoverSubtitle}
         </p>
 
-        <ul className="space-y-3 mb-6">
-          {(whatYoullLearn?.length ? whatYoullLearn.slice(0, 3) : [
-            "Master the programming language by building unique projects.",
-            "Learn automation, game, app and web development, data science.",
-            "You will be able to program professionally."
-          ]).map((item, i) => (
+        {/* Rating & reviews */}
+        <div className="flex items-center gap-2 mb-4">
+          <span className="text-sm font-bold text-foreground">{rating}</span>
+          <div className="flex">
+            {[...Array(5)].map((_, i) => (
+              <Star key={i} className={`h-3.5 w-3.5 ${i < Math.floor(rating) ? "fill-amber-400 text-amber-400" : "text-muted-foreground/30"}`} />
+            ))}
+          </div>
+          <span className="text-xs text-muted-foreground">({reviews?.toLocaleString()} reviews)</span>
+        </div>
+
+        {/* Instructor */}
+        {instructor && (
+          <div className="flex items-center gap-2 mb-4">
+            {instructorAvatar && <img src={instructorAvatar} alt={instructor} className="h-6 w-6 rounded-full object-cover" />}
+            <span className="text-xs text-muted-foreground">By <span className="font-semibold text-foreground">{instructor}</span></span>
+          </div>
+        )}
+
+        <ul className="space-y-2.5 mb-5">
+          {hoverLearnItems.map((item, i) => (
             <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground leading-relaxed">
-              <Check className="h-4 w-4 text-foreground shrink-0 mt-0.5" />
+              <Check className="h-4 w-4 text-accent shrink-0 mt-0.5" />
               <span>{item}</span>
             </li>
           ))}
@@ -124,7 +170,7 @@ export default function CourseCard({
 
         <div className="flex gap-3">
           <button className="flex-1 bg-primary text-primary-foreground text-sm font-semibold py-2.5 rounded-lg hover:bg-primary/90 transition-colors">
-            Add to cart
+            {courseIsFree ? "Enroll Free" : "Add to cart"}
           </button>
           <button className="flex items-center justify-center w-11 h-11 rounded-full border border-border text-foreground hover:bg-muted transition-colors shrink-0">
             <Heart className="h-5 w-5 text-muted-foreground hover:text-red-500 transition-colors" />

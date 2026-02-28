@@ -1,148 +1,352 @@
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, SlidersHorizontal, Star, Clock, X, School, CheckCircle } from "lucide-react";
+import {
+    School, CheckCircle, ArrowRight, Megaphone, ClipboardCheck,
+    Briefcase, Users, Building2, Trophy, FileText, Code,
+    Mic, BookOpen, GraduationCap, Target, Star, Lightbulb,
+} from "lucide-react";
 import Layout from "@/components/layout/Layout";
 
-import course1 from "@/assets/course-1.jpg";
-import course2 from "@/assets/course-2.jpg";
-import course3 from "@/assets/course-3.jpg";
-import course4 from "@/assets/course-4.jpg";
-import course5 from "@/assets/course-5.jpg";
-import course6 from "@/assets/course-6.jpg";
-import course7 from "@/assets/course-7.jpg";
+import heroPerson1 from "@/assets/hero-person-1.jpg";
+import heroPerson2 from "@/assets/hero-person-2.jpg";
+import about1 from "@/assets/about-1.jpg";
 
-const CATEGORIES = ["All", "Engineering", "Computer Science", "Business", "Design", "Data Science", "Communication"];
-const LEVELS = ["All", "Beginner", "Intermediate", "Advanced"];
+const fadeUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
 
-const campusCourses = [
-    { image: course1, category: "Computer Science", level: "Beginner", title: "Introduction to Programming with Python", rating: 4.9, reviews: 6200, weeks: 8, price: 0, originalPrice: 0, isFree: true },
-    { image: course2, category: "Data Science", level: "Intermediate", title: "Machine Learning for Engineering Students", rating: 4.8, reviews: 2800, weeks: 12, price: 99, originalPrice: 199, isFree: false },
-    { image: course3, category: "Design", level: "Beginner", title: "Design Thinking for Campus Innovators", rating: 4.7, reviews: 1900, weeks: 6, price: 0, originalPrice: 0, isFree: true },
-    { image: course4, category: "Engineering", level: "Intermediate", title: "Full-Stack Web Development Bootcamp", rating: 4.8, reviews: 3400, weeks: 14, price: 79, originalPrice: 159, isFree: false },
-    { image: course5, category: "Business", level: "Beginner", title: "Entrepreneurship & Startup Fundamentals", rating: 4.6, reviews: 1650, weeks: 6, price: 0, originalPrice: 0, isFree: true },
-    { image: course6, category: "Communication", level: "Beginner", title: "Professional English & Interview Preparation", rating: 4.7, reviews: 5100, weeks: 4, price: 0, originalPrice: 0, isFree: true },
-    { image: course7, category: "Data Science", level: "Advanced", title: "Research Methodology & Data Analysis for Thesis", rating: 4.5, reviews: 890, weeks: 10, price: 49, originalPrice: 99, isFree: false },
+const campusServices = [
+    {
+        icon: Megaphone,
+        title: "Campus Placement Drive Updates",
+        desc: "Stay informed about upcoming placement opportunities and campus recruitment drives.",
+        color: "text-violet-400",
+        bg: "bg-violet-400/10",
+        border: "border-violet-400/20",
+    },
+    {
+        icon: ClipboardCheck,
+        title: "Mock Assessments",
+        desc: "Prepare for placements with realistic technical, aptitude, and coding assessments.",
+        color: "text-sky-400",
+        bg: "bg-sky-400/10",
+        border: "border-sky-400/20",
+    },
+    {
+        icon: Briefcase,
+        title: "Career Preparation Programs",
+        desc: "Help students become job-ready with resume workshops, interview prep and mentoring.",
+        color: "text-accent",
+        bg: "bg-accent/10",
+        border: "border-accent/20",
+    },
 ];
 
-const LEVEL_BADGE = {
-    Beginner: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-    Intermediate: "bg-amber-500/20   text-amber-400   border border-amber-500/30",
-    Advanced: "bg-rose-500/20    text-rose-400    border border-rose-500/30",
-};
-const CAT_COLOR = { Engineering: "text-cyan-400", "Computer Science": "text-violet-400", Business: "text-amber-400", Design: "text-emerald-400", "Data Science": "text-sky-400", Communication: "text-rose-400" };
+const stats = [
+    { value: "500+", label: "Campus Partners" },
+    { value: "50,000+", label: "Students Placed" },
+    { value: "200+", label: "Hiring Companies" },
+    { value: "1,000+", label: "Mock Tests Completed" },
+];
 
-function CourseCard({ course, index }) {
-    return (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: index * 0.04 }}>
-            <Link to={`/course/${index + 1}`} state={{ course }} className="group block h-full">
-                <div className="h-full overflow-hidden rounded-2xl bg-card border border-border/40 shadow-md hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 flex flex-col">
-                    <div className="relative overflow-hidden">
-                        <img src={course.image} alt={course.title} className="h-44 w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        {course.isFree && <span className="absolute top-3 right-3 rounded-full bg-accent/90 px-2.5 py-0.5 text-[10px] font-bold text-accent-foreground uppercase">FREE</span>}
-                    </div>
-                    <div className="flex flex-col flex-1 p-5">
-                        <p className={`mb-1 text-xs font-bold tracking-widest uppercase ${CAT_COLOR[course.category] ?? "text-primary"}`}>{course.category}</p>
-                        <h3 className="mb-3 text-sm font-semibold leading-snug text-foreground line-clamp-2 group-hover:text-primary transition-colors">{course.title}</h3>
-                        <div className="mb-4 flex items-center gap-3">
-                            <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${LEVEL_BADGE[course.level]}`}>{course.level}</span>
-                            <span className="flex items-center gap-1 text-xs text-muted-foreground"><Clock className="h-3.5 w-3.5" />{course.weeks} weeks</span>
-                        </div>
-                        <div className="mt-auto flex items-center justify-between border-t border-border/40 pt-3">
-                            <div className="flex items-center gap-1">
-                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                                <span className="text-sm font-semibold text-foreground">{course.rating}</span>
-                                <span className="text-xs text-muted-foreground">({course.reviews.toLocaleString()})</span>
-                            </div>
-                            <span className="text-sm font-bold text-primary">{course.isFree ? "FREE" : `₹${(course.price * 83).toLocaleString()}`} →</span>
-                        </div>
-                    </div>
-                </div>
-            </Link>
-        </motion.div>
-    );
-}
+const placementItems = [
+    { icon: Building2, text: "Company placement announcements" },
+    { icon: Users, text: "Campus recruitment drives" },
+    { icon: Briefcase, text: "Internship opportunities" },
+    { icon: Megaphone, text: "Job alerts" },
+    { icon: Trophy, text: "Hackathons and competitions" },
+    { icon: Lightbulb, text: "Participate in innovation challenges" },
+];
+
+const mockAssessmentItems = [
+    { icon: Code, text: "Technical mock tests" },
+    { icon: Target, text: "Aptitude practice tests" },
+    { icon: FileText, text: "Coding assessments" },
+    { icon: ClipboardCheck, text: "Placement readiness reports" },
+];
+
+const careerPrepItems = [
+    { icon: FileText, text: "Resume preparation workshops" },
+    { icon: Mic, text: "Interview preparation sessions" },
+    { icon: Users, text: "Industry mentoring" },
+    { icon: BookOpen, text: "Career guidance" },
+];
 
 export default function ForCampus() {
-    const [search, setSearch] = useState("");
-    const [category, setCategory] = useState("All");
-    const [level, setLevel] = useState("All");
-    const [priceFilter, setPriceFilter] = useState("All");
+    const [activeTab, setActiveTab] = useState(0);
 
-    const filtered = useMemo(() => campusCourses.filter((c) => {
-        const matchCat = category === "All" || c.category === category;
-        const matchLevel = level === "All" || c.level === level;
-        const matchPrice = priceFilter === "All" || (priceFilter === "Free" ? c.isFree : !c.isFree);
-        const matchQ = c.title.toLowerCase().includes(search.toLowerCase());
-        return matchCat && matchLevel && matchPrice && matchQ;
-    }), [search, category, level, priceFilter]);
-
-    const hasActive = category !== "All" || level !== "All" || search !== "" || priceFilter !== "All";
-    const clear = () => { setSearch(""); setCategory("All"); setLevel("All"); setPriceFilter("All"); };
+    const tabs = [
+        { title: "Placement Drives", items: placementItems, icon: Megaphone, color: "text-violet-400", bg: "bg-violet-400/10" },
+        { title: "Mock Assessments", items: mockAssessmentItems, icon: ClipboardCheck, color: "text-sky-400", bg: "bg-sky-400/10" },
+        { title: "Career Preparation", items: careerPrepItems, icon: Briefcase, color: "text-accent", bg: "bg-accent/10" },
+    ];
 
     return (
         <Layout>
-            <section className="bg-gradient-hero py-14">
+            {/* ═══════════════════════════════════
+          1. HERO
+      ═══════════════════════════════════ */}
+            <section className="relative overflow-hidden bg-gradient-hero">
+                {/* Decorative elements */}
+                <div className="absolute left-8 top-20 h-3 w-3 text-accent opacity-40">✕</div>
+                <div className="absolute left-[20%] top-[40%] h-2 w-2 rounded-full bg-primary opacity-30" />
+                <div className="absolute right-[15%] top-16 h-3 w-3 text-primary-dark-foreground/15">✕</div>
+                <div className="absolute left-8 bottom-[40%] text-accent opacity-40">+</div>
+                <div className="absolute right-[30%] bottom-[20%] text-primary-dark-foreground/15">☆</div>
+
                 <div className="container mx-auto px-4 lg:px-8">
-                    <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                        <div className="flex items-center gap-2 mb-3">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-400/20"><School className="h-4 w-4 text-amber-400" /></div>
-                            <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Campus Programme</span>
-                        </div>
-                        <h1 className="text-4xl font-bold text-primary-dark-foreground mb-2">For Campus</h1>
-                        <p className="text-sm text-primary-dark-foreground/60 max-w-lg">Purpose-built programmes for students, graduates, and faculty. Bridge the gap between campus learning and industry expectations.</p>
-                        <div className="mt-6 flex flex-wrap gap-4">
-                            {["Internship Tie-ups", "Placement Support", "Faculty Development", "Certification Programmes"].map((b) => (
-                                <div key={b} className="flex items-center gap-1.5 text-xs text-primary-dark-foreground/70">
-                                    <CheckCircle className="h-3.5 w-3.5 text-accent" /> {b}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center py-16 lg:py-24">
+                        {/* Left – text */}
+                        <motion.div initial="hidden" animate="visible" variants={fadeUp}>
+                            <div className="flex items-center gap-2 mb-4">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-400/20">
+                                    <School className="h-5 w-5 text-amber-400" />
                                 </div>
+                                <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Campus Programme</span>
+                            </div>
+                            <h1 className="mb-6 text-2xl sm:text-4xl lg:text-5xl font-bold leading-tight text-primary-dark-foreground">
+                                Empowering Students with{" "}
+                                <span className="text-gradient-primary">Career Opportunities</span>
+                            </h1>
+                            <p className="mb-8 max-w-lg text-sm md:text-base leading-relaxed text-primary-dark-foreground/60">
+                                SkillMedha connects students with industry opportunities through campus drives, hackathons, mock assessments, and career readiness programs.
+                            </p>
+                            <div className="flex flex-wrap gap-4">
+                                <Link to="/contact" className="rounded-xl bg-gradient-primary px-8 py-4 text-sm font-semibold text-primary-foreground transition-all hover:shadow-glow-primary hover:scale-105">
+                                    Register Your Campus
+                                </Link>
+                                <a href="#services" className="rounded-xl border-2 border-accent px-8 py-4 text-sm font-semibold text-accent transition-all hover:bg-accent hover:text-accent-foreground">
+                                    Explore Opportunities
+                                </a>
+                            </div>
+
+                            {/* Trust badges */}
+                            <div className="mt-10 flex flex-wrap gap-6">
+                                {["Campus Drives", "Hackathons", "Mock Tests", "Career Guidance"].map((b) => (
+                                    <div key={b} className="flex items-center gap-1.5 text-xs text-primary-dark-foreground/60">
+                                        <CheckCircle className="h-3.5 w-3.5 text-accent" /> {b}
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.div>
+
+                        {/* Right – image */}
+                        <div className="relative mt-8 lg:mt-0 min-h-[380px] sm:min-h-[420px] lg:min-h-0">
+                            <motion.div className="relative z-10" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, delay: 0.2 }}>
+                                <img src={heroPerson1} alt="Campus students" className="rounded-2xl shadow-2xl w-full max-w-sm mx-auto lg:w-80 lg:ml-auto lg:mx-0" />
+                            </motion.div>
+                            <motion.div className="hidden lg:block absolute -bottom-4 right-60 z-20" initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.5, duration: 0.6 }}>
+                                <img src={heroPerson2} alt="Student" className="h-48 w-36 rounded-2xl object-cover shadow-xl" />
+                            </motion.div>
+
+                            {/* Floating cards */}
+                            <motion.div className="absolute left-0 bottom-20 z-30 animate-float sm:bottom-40 xl:left-40" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8 }}>
+                                <div className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 shadow-card-hover">
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                                        <GraduationCap className="h-5 w-5 text-primary" />
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-bold text-accent">500+</p>
+                                        <p className="text-xs text-muted-foreground">Campus Partners</p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                            <motion.div className="absolute right-0 bottom-0 z-30" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
+                                <div className="rounded-xl bg-card px-4 py-3 shadow-card-hover">
+                                    <p className="text-sm font-semibold text-accent">50,000+</p>
+                                    <p className="text-xs text-muted-foreground">Students Placed</p>
+                                </div>
+                            </motion.div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Wave */}
+                <div className="absolute bottom-0 left-0 right-0">
+                    <svg viewBox="0 0 1440 80" fill="none" className="w-full">
+                        <path d="M0 40C360 80 720 0 1080 40C1260 60 1380 60 1440 40V80H0V40Z" fill="hsl(240, 20%, 98%)" />
+                    </svg>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════
+          2. CAMPUS SERVICES — Icon cards
+      ═══════════════════════════════════ */}
+            <section id="services" className="py-20">
+                <div className="container mx-auto px-4 lg:px-8">
+                    <motion.div className="mb-14 text-center" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+                        <p className="mb-2 text-xs font-bold uppercase tracking-widest text-accent">What We Offer</p>
+                        <h2 className="mb-3 text-3xl lg:text-4xl font-bold text-foreground">Campus Services</h2>
+                        <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+                            Everything your campus needs to bridge the gap between academics and industry careers.
+                        </p>
+                    </motion.div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {campusServices.map((svc, i) => (
+                            <motion.div
+                                key={svc.title}
+                                className={`group rounded-2xl bg-card border ${svc.border} shadow-card p-8 text-center hover:shadow-card-hover hover:-translate-y-2 transition-all duration-300`}
+                                initial="hidden"
+                                whileInView="visible"
+                                viewport={{ once: true }}
+                                variants={{ ...fadeUp, visible: { ...fadeUp.visible, transition: { duration: 0.5, delay: i * 0.12 } } }}
+                            >
+                                <div className={`inline-flex h-16 w-16 items-center justify-center rounded-2xl ${svc.bg} mb-6`}>
+                                    <svc.icon className={`h-8 w-8 ${svc.color}`} />
+                                </div>
+                                <h3 className="mb-3 text-lg font-bold text-foreground group-hover:text-primary transition-colors">{svc.title}</h3>
+                                <p className="text-sm text-muted-foreground leading-relaxed">{svc.desc}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════
+          3. STATS BAR
+      ═══════════════════════════════════ */}
+            <section className="bg-gradient-primary py-14">
+                <div className="container mx-auto px-4 lg:px-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                        {stats.map((s, i) => (
+                            <motion.div
+                                key={s.label}
+                                className="text-center"
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: i * 0.1 }}
+                            >
+                                <p className="text-3xl lg:text-4xl font-bold text-primary-foreground">{s.value}</p>
+                                <p className="mt-1 text-sm text-primary-foreground/70">{s.label}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════
+          4. DETAILED SERVICES — Tabs
+      ═══════════════════════════════════ */}
+            <section className="py-20">
+                <div className="container mx-auto px-4 lg:px-8">
+                    <motion.div className="mb-12 text-center" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
+                        <h2 className="mb-3 text-3xl lg:text-4xl font-bold text-foreground">How We Help Your Campus</h2>
+                        <p className="text-sm text-muted-foreground max-w-xl mx-auto">
+                            Explore the detailed services we offer to make your students career-ready.
+                        </p>
+                    </motion.div>
+
+                    {/* Tabs */}
+                    <div className="flex justify-center mb-10">
+                        <div className="inline-flex gap-1 rounded-xl bg-muted p-1">
+                            {tabs.map((tab, i) => (
+                                <button
+                                    key={tab.title}
+                                    onClick={() => setActiveTab(i)}
+                                    className={`flex items-center gap-2 rounded-lg px-5 py-3 text-sm font-semibold transition-all duration-200 ${activeTab === i
+                                            ? "bg-card text-primary shadow-md"
+                                            : "text-muted-foreground hover:text-foreground"
+                                        }`}
+                                >
+                                    <tab.icon className="h-4 w-4" />
+                                    <span className="hidden sm:inline">{tab.title}</span>
+                                </button>
                             ))}
+                        </div>
+                    </div>
+
+                    {/* Tab content */}
+                    <motion.div
+                        key={activeTab}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.4 }}
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+                    >
+                        {/* Left – items */}
+                        <div>
+                            <div className={`inline-flex h-12 w-12 items-center justify-center rounded-xl ${tabs[activeTab].bg} mb-5`}>
+                                {(() => { const Icon = tabs[activeTab].icon; return <Icon className={`h-6 w-6 ${tabs[activeTab].color}`} />; })()}
+                            </div>
+                            <h3 className="text-2xl font-bold text-foreground mb-2">{tabs[activeTab].title}</h3>
+                            <p className="text-sm text-muted-foreground mb-8 max-w-md">
+                                {activeTab === 0
+                                    ? "Stay informed about upcoming placement opportunities and never miss a career-changing chance."
+                                    : activeTab === 1
+                                        ? "Prepare for placements with realistic assessments designed to match actual hiring tests."
+                                        : "Help students become job-ready with comprehensive career preparation programs."}
+                            </p>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {tabs[activeTab].items.map((item, i) => (
+                                    <motion.div
+                                        key={item.text}
+                                        className="flex items-start gap-3 rounded-xl bg-card border border-border/40 p-4 hover:shadow-md hover:border-primary/30 transition-all"
+                                        initial={{ opacity: 0, x: -15 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        transition={{ duration: 0.3, delay: i * 0.06 }}
+                                    >
+                                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${tabs[activeTab].bg}`}>
+                                            <item.icon className={`h-4 w-4 ${tabs[activeTab].color}`} />
+                                        </div>
+                                        <span className="text-sm font-medium text-foreground">{item.text}</span>
+                                    </motion.div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Right – image */}
+                        <div className="hidden lg:block">
+                            <img
+                                src={about1}
+                                alt={tabs[activeTab].title}
+                                className="rounded-2xl shadow-xl object-cover w-full max-h-[420px]"
+                            />
                         </div>
                     </motion.div>
                 </div>
             </section>
 
-            <section className="sticky top-16 z-20 bg-background/95 backdrop-blur border-b border-border/40 py-4 shadow-sm">
+            {/* ═══════════════════════════════════
+          5. CTA SECTION
+      ═══════════════════════════════════ */}
+            <section className="py-20 bg-gradient-hero">
                 <div className="container mx-auto px-4 lg:px-8">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="relative flex-1 max-w-sm">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <input type="text" placeholder="Search campus courses..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-border bg-card pl-9 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40" />
-                            {search && <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"><X className="h-3.5 w-3.5" /></button>}
+                    <motion.div
+                        className="text-center max-w-2xl mx-auto"
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        variants={fadeUp}
+                    >
+                        <div className="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-400/20 mb-6">
+                            <School className="h-7 w-7 text-amber-400" />
                         </div>
-                        <button className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${hasActive ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-foreground hover:border-primary/50"}`}>
-                            <SlidersHorizontal className="h-4 w-4" /> Filters {hasActive && <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />}
-                        </button>
-                        {hasActive && <button onClick={clear} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground border border-border transition-colors"><X className="h-3 w-3" /> Clear</button>}
-                    </div>
-                    <div className="flex flex-wrap gap-6">
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Category</span>
-                            {CATEGORIES.map((cat) => <button key={cat} onClick={() => setCategory(cat)} className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${category === cat ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}>{cat}</button>)}
+                        <h2 className="mb-4 text-3xl lg:text-4xl font-bold text-primary-dark-foreground">
+                            Register Your Campus Today
+                        </h2>
+                        <p className="mb-8 text-sm md:text-base text-primary-dark-foreground/60 max-w-lg mx-auto">
+                            Join 500+ campuses already empowering their students with SkillMedha's career readiness programs. Get started in minutes.
+                        </p>
+                        <div className="flex flex-wrap justify-center gap-4">
+                            <Link
+                                to="/contact"
+                                className="rounded-xl bg-gradient-primary px-10 py-4 text-sm font-semibold text-primary-foreground transition-all hover:shadow-glow-primary hover:scale-105"
+                            >
+                                Get Started <ArrowRight className="inline h-4 w-4 ml-1" />
+                            </Link>
+                            <Link
+                                to="/about"
+                                className="rounded-xl border-2 border-primary-dark-foreground/20 px-10 py-4 text-sm font-semibold text-primary-dark-foreground/80 transition-all hover:border-accent hover:text-accent"
+                            >
+                                Learn More
+                            </Link>
                         </div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Level</span>
-                            {LEVELS.map((lvl) => <button key={lvl} onClick={() => setLevel(lvl)} className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${level === lvl ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}>{lvl}</button>)}
-                        </div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Price</span>
-                            {["All", "Free", "Paid"].map((p) => <button key={p} onClick={() => setPriceFilter(p)} className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${priceFilter === p ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}>{p}</button>)}
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section className="py-10">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <p className="mb-6 text-sm text-muted-foreground"><span className="font-semibold text-foreground">{filtered.length}</span> course{filtered.length !== 1 ? "s" : ""} found</p>
-                    {filtered.length > 0
-                        ? <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">{filtered.map((c, i) => <CourseCard key={i} course={c} index={i} />)}</div>
-                        : <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center py-20 text-center">
-                            <Search className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                            <p className="text-lg font-semibold text-foreground mb-1">No courses found</p>
-                            <button onClick={clear} className="mt-3 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">Clear Filters</button>
-                        </motion.div>}
+                    </motion.div>
                 </div>
             </section>
         </Layout>
