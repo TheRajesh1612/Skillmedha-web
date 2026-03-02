@@ -1,142 +1,249 @@
-import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, SlidersHorizontal, Star, Clock, X, Building2, CheckCircle } from "lucide-react";
+import {
+    Building2,
+    Users,
+    Lightbulb,
+    CheckCircle2,
+    ArrowRight
+} from "lucide-react";
 import Layout from "@/components/layout/Layout";
-import CourseCard from "@/components/CourseCard";
 
-import course1 from "@/assets/course-1.jpg";
-import course2 from "@/assets/course-2.jpg";
-import course4 from "@/assets/course-4.jpg";
-import course5 from "@/assets/course-5.jpg";
-import course6 from "@/assets/course-6.jpg";
-import course7 from "@/assets/course-7.jpg";
-import course8 from "@/assets/course-8.jpg";
+import corporateHero from "@/assets/about-1.jpg";
 
-const CATEGORIES = ["All", "Leadership", "Data Analytics", "Cloud & DevOps", "Cybersecurity", "Project Management", "Finance"];
-const LEVELS = ["All", "Beginner", "Intermediate", "Advanced"];
+const fadeUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
 
-const corporateCourses = [
-    { image: course1, category: "Leadership", level: "Intermediate", title: "Executive Leadership & Management Skills", rating: 4.9, reviews: 1820, weeks: 10, price: 199, originalPrice: 399, isFree: false },
-    { image: course2, category: "Data Analytics", level: "Intermediate", title: "Business Intelligence & Power BI Masterclass", rating: 4.8, reviews: 2100, weeks: 8, price: 149, originalPrice: 299, isFree: false },
-    { image: course4, category: "Cloud & DevOps", level: "Advanced", title: "Enterprise Cloud Architecture on AWS & Azure", rating: 4.7, reviews: 980, weeks: 16, price: 229, originalPrice: 449, isFree: false },
-    { image: course5, category: "Project Management", level: "Beginner", title: "PMP Certification Prep — Complete Boot Camp", rating: 4.8, reviews: 1540, weeks: 12, price: 179, originalPrice: 349, isFree: false },
-    { image: course6, category: "Cybersecurity", level: "Advanced", title: "Enterprise Security & Risk Management", rating: 4.9, reviews: 760, weeks: 14, price: 249, originalPrice: 499, isFree: false },
-    { image: course7, category: "Finance", level: "Beginner", title: "Corporate Finance & Financial Modelling", rating: 4.6, reviews: 1320, weeks: 8, price: 0, originalPrice: 0, isFree: true },
-    { image: course8, category: "Data Analytics", level: "Advanced", title: "Machine Learning for Business Decision-Making", rating: 4.8, reviews: 1100, weeks: 12, price: 199, originalPrice: 399, isFree: false },
+const corporateServices = [
+    {
+        id: "bulk-assessments",
+        icon: Building2,
+        title: "Bulk Assessments for Placement Drives",
+        desc: "Conduct large-scale candidate assessments efficiently like Online technical assessments, Aptitude and coding tests, AI-based evaluation and ranking, Secure and scalable exam platform.",
+        color: "text-blue-500",
+        bg: "bg-blue-500/10",
+        border: "border-blue-500/20",
+    },
+    {
+        id: "campus-recruitment",
+        icon: Users,
+        title: "Campus Recruitment Support",
+        desc: "Streamline your campus hiring process by Pre-screening assessments, Candidate shortlisting, Interview coordination, Campus drive management, Job Posting Platform Reach a large pool of qualified candidates.",
+        color: "text-emerald-500",
+        bg: "bg-emerald-500/10",
+        border: "border-emerald-500/20",
+    },
+    {
+        id: "corporate-training",
+        icon: Lightbulb,
+        title: "Corporate Training Programs",
+        desc: "Upskill your workforce with customized trainings like AI, Cloud, Cybersecurity training, Corporate workshops, Hands-on labs and real projects, Customized curriculum.",
+        color: "text-amber-500",
+        bg: "bg-amber-500/10",
+        border: "border-amber-500/20",
+    },
 ];
 
-const LEVEL_BADGE = {
-    Beginner: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-    Intermediate: "bg-amber-500/20   text-amber-400   border border-amber-500/30",
-    Advanced: "bg-rose-500/20    text-rose-400    border border-rose-500/30",
-};
-const CAT_COLOR = { Leadership: "text-violet-400", "Data Analytics": "text-cyan-400", "Cloud & DevOps": "text-sky-400", Cybersecurity: "text-rose-400", "Project Management": "text-amber-400", Finance: "text-emerald-400" };
-
-
-
 export default function ForCorporates() {
-    const [search, setSearch] = useState("");
-    const [category, setCategory] = useState("All");
-    const [level, setLevel] = useState("All");
-    const [priceFilter, setPriceFilter] = useState("All");
-
-    const filtered = useMemo(() => corporateCourses.filter((c) => {
-        const matchCat = category === "All" || c.category === category;
-        const matchLevel = level === "All" || c.level === level;
-        const matchPrice = priceFilter === "All" || (priceFilter === "Free" ? c.isFree : !c.isFree);
-        const matchQ = c.title.toLowerCase().includes(search.toLowerCase());
-        return matchCat && matchLevel && matchPrice && matchQ;
-    }), [search, category, level, priceFilter]);
-
-    const hasActive = category !== "All" || level !== "All" || search !== "" || priceFilter !== "All";
-    const clear = () => { setSearch(""); setCategory("All"); setLevel("All"); setPriceFilter("All"); };
-
     return (
         <Layout>
-            <section className="bg-gradient-hero py-14">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                        <div className="flex items-center gap-2 mb-3">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-400/20"><Building2 className="h-4 w-4 text-sky-400" /></div>
-                            <span className="text-xs font-bold uppercase tracking-widest text-sky-400">Corporate Training</span>
-                        </div>
-                        <h1 className="text-4xl font-bold text-primary-dark-foreground mb-2">For Corporates</h1>
-                        <p className="text-sm text-primary-dark-foreground/60 max-w-lg">Upskill your entire workforce with enterprise-grade training programmes. Bulk enrolment, analytics dashboard, and dedicated support.</p>
-                        <div className="mt-6 flex flex-wrap gap-4">
-                            {["Bulk Enrolment", "Custom Learning Paths", "Progress Analytics", "Dedicated Account Manager"].map((b) => (
-                                <div key={b} className="flex items-center gap-1.5 text-xs text-primary-dark-foreground/70">
-                                    <CheckCircle className="h-3.5 w-3.5 text-accent" /> {b}
-                                </div>
-                            ))}
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
+            {/* ═══════════════════════════════════
+          1. HERO SECTION (Split Layout)
+      ═══════════════════════════════════ */}
+            <section className="bg-muted/30 overflow-hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[600px]">
 
-            <section className="sticky top-16 z-20 bg-background/95 backdrop-blur border-b border-border/40 py-4 shadow-sm">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="relative flex-1 max-w-sm">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <input type="text" placeholder="Search corporate courses..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-border bg-card pl-9 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40" />
-                            {search && <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"><X className="h-3.5 w-3.5" /></button>}
-                        </div>
-                        <button onClick={() => { }} className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${hasActive ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-foreground hover:border-primary/50"}`}>
-                            <SlidersHorizontal className="h-4 w-4" /> Filters {hasActive && <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />}
-                        </button>
-                        {hasActive && <button onClick={clear} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground border border-border transition-colors"><X className="h-3 w-3" /> Clear</button>}
-                    </div>
-                    <div className="flex flex-wrap gap-6">
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Category</span>
-                            {CATEGORIES.map((cat) => <button key={cat} onClick={() => setCategory(cat)} className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${category === cat ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}>{cat}</button>)}
-                        </div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Level</span>
-                            {LEVELS.map((lvl) => <button key={lvl} onClick={() => setLevel(lvl)} className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${level === lvl ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}>{lvl}</button>)}
-                        </div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Price</span>
-                            {["All", "Free", "Paid"].map((p) => <button key={p} onClick={() => setPriceFilter(p)} className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${priceFilter === p ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}>{p}</button>)}
-                        </div>
-                    </div>
-                </div>
-            </section>
+                    {/* Left Content */}
+                    <div className="flex flex-col justify-center px-6 py-16 lg:px-16 xl:px-24">
+                        <motion.div initial="hidden" animate="visible" variants={fadeUp}>
+                            <div className="flex items-center gap-2 mb-6 text-primary font-semibold tracking-wide uppercase text-sm">
+                                <span className="w-8 h-[2px] bg-primary"></span>
+                                <span>Corporate Page</span>
+                            </div>
 
-            <section className="py-10">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <p className="mb-6 text-sm text-muted-foreground"><span className="font-semibold text-foreground">{filtered.length}</span> course{filtered.length !== 1 ? "s" : ""} found</p>
-                    {filtered.length > 0
-                        ? <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">{filtered.map((c, i) => (
-                            <motion.div key={i} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: i * 0.04 }}>
-                                <Link to={`/course/${i + 1}`} state={{ course: c }}>
-                                    <CourseCard
-                                        image={c.image}
-                                        title={c.title}
-                                        rating={c.rating}
-                                        reviews={c.reviews}
-                                        lessons={c.weeks}
-                                        duration={`${c.weeks} weeks`}
-                                        level={c.level}
-                                        category={c.category}
-                                        weeks={c.weeks}
-                                        isFree={c.isFree}
-                                        price={c.price}
-                                        originalPrice={c.originalPrice}
-                                        badge={c.isFree ? "FREE" : null}
-                                        badgeColor="bg-accent"
-                                    />
+                            <h1 className="mb-6 text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.1] text-foreground tracking-tight">
+                                Hire Skilled Talent Faster and Smarter
+                            </h1>
+
+                            <p className="mb-8 text-lg leading-relaxed text-muted-foreground max-w-[540px]">
+                                SkillMedha provides end-to-end recruitment and assessment solutions for organizations to identify, evaluate, and hire the right talent efficiently.
+                            </p>
+
+                            <div className="flex flex-wrap gap-4">
+                                <Link
+                                    to="/post-job"
+                                    className="rounded-lg bg-primary px-8 py-4 text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:-translate-y-0.5"
+                                >
+                                    Post Jobs
                                 </Link>
-                            </motion.div>
-                        ))}</div>
-                        : <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center py-20 text-center">
-                            <Search className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                            <p className="text-lg font-semibold text-foreground mb-1">No courses found</p>
-                            <button onClick={clear} className="mt-3 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">Clear Filters</button>
-                        </motion.div>}
+                                <Link
+                                    to="/assessments"
+                                    className="rounded-lg border-2 border-foreground px-8 py-4 text-base font-semibold text-foreground transition-all hover:bg-foreground hover:text-background"
+                                >
+                                    Conduct Assessments
+                                </Link>
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    {/* Right Image Container */}
+                    <div className="relative hidden lg:block h-full min-h-[600px]">
+                        <motion.div
+                            className="absolute inset-0 w-full h-full"
+                            initial={{ opacity: 0, x: 50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                        >
+                            <img
+                                src={corporateHero}
+                                alt="Corporate professionals meeting"
+                                className="absolute inset-0 w-full h-full object-cover object-center"
+                            />
+                        </motion.div>
+                    </div>
+
+                    {/* Mobile Image */}
+                    <div className="block lg:hidden w-full h-[300px] sm:h-[400px]">
+                        <img
+                            src={corporateHero}
+                            alt="Corporate professionals meeting"
+                            className="w-full h-full object-cover object-center"
+                        />
+                    </div>
                 </div>
             </section>
+
+            {/* ═══════════════════════════════════
+          2. OUR SERVICES SECTION
+      ═══════════════════════════════════ */}
+            <section className="py-24 bg-white relative">
+                <div className="container mx-auto px-4 lg:px-8">
+                    <motion.div
+                        className="mb-16 text-center max-w-3xl mx-auto"
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={fadeUp}
+                    >
+                        <h2 className="mb-4 text-3xl md:text-4xl font-bold text-foreground">Our Corporate Services</h2>
+                        <div className="h-1.5 w-20 bg-primary mx-auto rounded-full mb-6 relative">
+                            <div className="absolute w-4 h-4 bg-accent rounded-full -right-2 -top-[5px]"></div>
+                        </div>
+                        <p className="text-base text-muted-foreground">
+                            Comprehensive recruitment and upskilling solutions tailored for enterprise growth.
+                        </p>
+                    </motion.div>
+
+                    {/* Services Grid layout */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {corporateServices.map((service, index) => (
+                            <motion.div
+                                key={service.id}
+                                className={`group relative overflow-hidden rounded-2xl bg-card border ${service.border} transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1`}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: "-50px" }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                            >
+                                {/* Background Hover Decoration */}
+                                <div className={`absolute -right-10 -top-10 h-32 w-32 rounded-full ${service.bg} opacity-50 blur-2xl transition-all duration-500 group-hover:scale-150`}></div>
+
+                                <div className="relative p-8 h-full flex flex-col">
+                                    {/* Icon Header */}
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${service.bg} shadow-sm border border-white/20`}>
+                                            <service.icon className={`h-8 w-8 ${service.color}`} />
+                                        </div>
+                                        <span className="text-5xl font-extrabold text-muted/30 select-none">
+                                            0{index + 1}
+                                        </span>
+                                    </div>
+
+                                    {/* Content */}
+                                    <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors pr-8">
+                                        {service.title}
+                                    </h3>
+
+                                    {/* Parsing description to make lists looking better */}
+                                    <div className="text-sm text-muted-foreground leading-relaxed flex-1">
+                                        {service.desc.includes('like ') || service.desc.includes('by ') ? (
+                                            <div>
+                                                <p className="mb-3">{service.desc.split(/(?:like |by |Platform )/)[0]}</p>
+                                                <ul className="space-y-3">
+                                                    {service.desc.substring(service.desc.indexOf(service.desc.includes('like') ? 'like' : 'by') + (service.desc.includes('like') ? 5 : 3)).split(/,\s*/).map((point, i) => (
+                                                        <li key={i} className="flex items-start gap-2">
+                                                            <CheckCircle2 className={`h-4 w-4 shrink-0 mt-0.5 ${service.color}`} />
+                                                            <span>{point.trim()}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        ) : (
+                                            <p>{service.desc}</p>
+                                        )}
+                                    </div>
+
+                                    {/* Bottom linking */}
+                                    <div className="mt-8 pt-4 border-t border-border/60">
+                                        <Link to="/contact" className={`inline-flex items-center text-sm font-semibold hover:gap-2 transition-all gap-1 ${service.color}`}>
+                                            Contact Sales <ArrowRight className="h-4 w-4" />
+                                        </Link>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════
+          3. CTA SECTION
+      ═══════════════════════════════════ */}
+            <section className="py-20 relative overflow-hidden">
+                <div className="absolute inset-0 bg-primary"></div>
+                {/* Background Patterns */}
+                <div className="absolute top-0 right-0 opacity-10">
+                    <svg width="400" height="400" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="40" stroke="white" strokeWidth="2" strokeDasharray="4 4" />
+                        <circle cx="50" cy="50" r="30" stroke="white" strokeWidth="2" />
+                    </svg>
+                </div>
+
+                <div className="container mx-auto px-4 lg:px-8 relative z-10">
+                    <div className="max-w-4xl mx-auto text-center">
+                        <motion.h2
+                            className="text-3xl md:text-5xl font-bold text-white mb-6"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                        >
+                            Scale Your Hiring & Training
+                        </motion.h2>
+                        <motion.p
+                            className="text-white/80 text-lg mb-10 max-w-2xl mx-auto"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                        >
+                            Partner with SkillMedha to access pre-assessed talent and custom corporate training programs.
+                        </motion.p>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 }}
+                        >
+                            <Link to="/contact" className="inline-flex items-center justify-center rounded-full bg-background px-8 py-4 text-base font-bold text-primary shadow-lg transition-transform hover:scale-105">
+                                Contact Enterprise Sales
+                            </Link>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
         </Layout>
     );
 }

@@ -367,7 +367,7 @@ export default function Index() {
           <motion.div className="mt-16" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
             <div className="mb-6 flex items-center justify-between">
               <h3 className="text-xl font-bold text-foreground">Popular Courses</h3>
-              <Link to="/for-individuals" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+              <Link to="/courses" className="flex items-center gap-1 text-sm font-medium text-primary hover:underline">
                 View All <ArrowRight className="h-4 w-4" />
               </Link>
             </div>

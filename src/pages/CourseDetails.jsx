@@ -1,4 +1,4 @@
-import { Link, useParams, useLocation } from "react-router-dom";
+import { Link, useParams, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
   Star,
@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import Layout from "@/components/layout/Layout";
 import CourseCard from "@/components/CourseCard";
+import EnrollModal from "@/components/EnrollModal";
 import { allCourses, generateCourseData } from "@/data/courses";
 
 /* ─────────────────────── Stars component ─────────────────────── */
@@ -43,9 +44,11 @@ function Stars({ rating, size = "sm" }) {
 export default function CourseDetails() {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const [expandedSection, setExpandedSection] = useState(0);
   const [showMore, setShowMore] = useState(false);
   const [showAllSections, setShowAllSections] = useState(false);
+  const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
 
   let course;
   if (location.state?.course) {
@@ -57,8 +60,14 @@ export default function CourseDetails() {
   const relatedCourses = allCourses.filter((c) => c.id !== course.id).slice(0, 4);
   const visibleSections = showAllSections ? course.sections : course.sections.slice(0, 7);
 
+  // Compute if the course is free
+  const isFreeCourse = course.isFree || course.price === 0 || course.badge === "FREE";
+
+  // Strip non-serializable fields (like React components in courseIncludes) before passing to React Router state
+  const { courseIncludes, ...serializableCourse } = course;
+
   /* ── Sticky Sidebar Card ── */
-  const SidebarCard = () => (
+  const sidebarCardContent = (
     <div className="rounded-xl bg-card border border-border shadow-card overflow-hidden">
       {/* Preview image / video thumbnail */}
       <div className="relative group cursor-pointer">
@@ -80,7 +89,7 @@ export default function CourseDetails() {
       <div className="p-5">
         {/* Price */}
         <div className="flex items-baseline gap-3 mb-1">
-          <span className="text-2xl font-bold text-foreground">{course.isFree ? "FREE" : `₹${course.price !== undefined ? (course.price * 83).toLocaleString() : 0}`}</span>
+          <span className="text-2xl font-bold text-foreground">{isFreeCourse ? "FREE" : `₹${course.price !== undefined ? (course.price * 83).toLocaleString() : 0}`}</span>
           {course.originalPrice > 0 && (
             <span className="text-base text-muted-foreground line-through">₹{(course.originalPrice * 83).toLocaleString()}</span>
           )}
@@ -92,12 +101,17 @@ export default function CourseDetails() {
         </p>
 
         {/* CTA Buttons */}
-        <button className="w-full rounded-lg bg-gradient-primary py-3 text-sm font-semibold text-white mb-3 hover:opacity-90 transition-opacity hover:shadow-glow-primary flex items-center justify-center gap-2">
-          <ShoppingCart className="h-4 w-4" />
-          Add to cart
-        </button>
-        <button className="w-full rounded-lg border-2 border-primary py-3 text-sm font-semibold text-primary mb-4 hover:bg-primary hover:text-primary-foreground transition-colors">
-          Buy now
+        <button
+          onClick={() => {
+            if (isFreeCourse) {
+              setIsEnrollModalOpen(true);
+            } else {
+              navigate("/checkout", { state: { course: serializableCourse } });
+            }
+          }}
+          className="w-full rounded-lg bg-gradient-primary py-3 text-sm font-semibold text-white mb-4 hover:opacity-90 transition-opacity hover:shadow-glow-primary flex items-center justify-center gap-2"
+        >
+          {isFreeCourse ? "Enroll for Free" : "Buy now"}
         </button>
 
         <p className="text-center text-xs text-muted-foreground mb-4">30-Day Money-Back Guarantee</p>
@@ -354,7 +368,7 @@ export default function CourseDetails() {
             <div className="w-full lg:w-80 xl:w-88 shrink-0">
               {/* Desktop: sticky sidebar */}
               <div className="hidden lg:block">
-                <SidebarCard />
+                {sidebarCardContent}
               </div>
             </div>
           </div>
@@ -364,17 +378,23 @@ export default function CourseDetails() {
       {/* ── Mobile sidebar (bottom fixed bar) ── */}
       <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border px-4 py-3 flex items-center justify-between shadow-lg">
         <div>
-          <span className="text-xl font-bold text-foreground">{course.isFree ? "FREE" : `₹${course.price !== undefined ? (course.price * 83).toLocaleString() : 0}`}</span>
+          <span className="text-xl font-bold text-foreground">{isFreeCourse ? "FREE" : `₹${course.price !== undefined ? (course.price * 83).toLocaleString() : 0}`}</span>
           {course.originalPrice > 0 && (
             <span className="ml-2 text-sm text-muted-foreground line-through">₹{(course.originalPrice * 83).toLocaleString()}</span>
           )}
         </div>
         <div className="flex gap-2">
-          <button className="rounded-lg border-2 border-primary px-4 py-2 text-sm font-semibold text-primary hover:bg-primary hover:text-white transition-colors">
-            Buy now
-          </button>
-          <button className="rounded-lg bg-gradient-primary px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition-opacity">
-            Add to cart
+          <button
+            onClick={() => {
+              if (isFreeCourse) {
+                setIsEnrollModalOpen(true);
+              } else {
+                navigate("/checkout", { state: { course: serializableCourse } });
+              }
+            }}
+            className="rounded-lg bg-gradient-primary px-8 py-2.5 text-sm font-semibold text-white hover:opacity-90 transition-opacity shadow-sm"
+          >
+            {isFreeCourse ? "Enroll Free" : "Buy now"}
           </button>
         </div>
       </div>
@@ -392,6 +412,12 @@ export default function CourseDetails() {
           </div>
         </div>
       </section>
+
+      <EnrollModal
+        isOpen={isEnrollModalOpen}
+        onClose={() => setIsEnrollModalOpen(false)}
+        courseTitle={course.title}
+      />
     </Layout>
   );
 }

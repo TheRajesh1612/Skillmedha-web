@@ -1,5 +1,7 @@
 import { Star, Check, Heart } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import EnrollModal from "@/components/EnrollModal";
 import {
   HoverCard,
   HoverCardContent,
@@ -29,6 +31,8 @@ export default function CourseCard({
   isFree,
   ...props
 }) {
+  const navigate = useNavigate();
+  const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
   const id = props.id || null;
   // Strip non-serializable fields (courseIncludes has React icon components) before passing to Link state
   const { courseIncludes, ...serializableProps } = props;
@@ -101,9 +105,12 @@ export default function CourseCard({
     <HoverCard openDelay={200} closeDelay={100}>
       <HoverCardTrigger asChild>
         {id ? (
-          <Link to={`/course/${id}`} state={{ course: courseData }} className="group block h-full">
+          <div
+            onClick={() => navigate(`/course/${id}`, { state: { course: courseData } })}
+            className="group block h-full cursor-pointer"
+          >
             {cardContent}
-          </Link>
+          </div>
         ) : (
           <div className="group block h-full">
             {cardContent}
@@ -169,14 +176,30 @@ export default function CourseCard({
         </ul>
 
         <div className="flex gap-3">
-          <button className="flex-1 bg-primary text-primary-foreground text-sm font-semibold py-2.5 rounded-lg hover:bg-primary/90 transition-colors">
-            {courseIsFree ? "Enroll Free" : "Add to cart"}
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              if (courseIsFree) {
+                setIsEnrollModalOpen(true);
+              } else {
+                navigate("/checkout", { state: { course: courseData } });
+              }
+            }}
+            className="flex-1 bg-primary text-primary-foreground text-sm font-semibold py-2.5 rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            {courseIsFree ? "Enroll Free" : "Buy now"}
           </button>
           <button className="flex items-center justify-center w-11 h-11 rounded-full border border-border text-foreground hover:bg-muted transition-colors shrink-0">
             <Heart className="h-5 w-5 text-muted-foreground hover:text-red-500 transition-colors" />
           </button>
         </div>
       </HoverCardContent>
+
+      <EnrollModal
+        isOpen={isEnrollModalOpen}
+        onClose={() => setIsEnrollModalOpen(false)}
+        courseTitle={title}
+      />
     </HoverCard>
   );
 }
