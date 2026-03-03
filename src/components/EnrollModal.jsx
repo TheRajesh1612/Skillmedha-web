@@ -1,5 +1,6 @@
 import { X, Globe2, Sparkles, Cpu, Code2 } from "lucide-react";
 import { useState } from "react";
+import enrollImg from "@/assets/enroll-img.png";
 
 export default function EnrollModal({ isOpen, onClose, courseTitle }) {
     const [formData, setFormData] = useState({
@@ -28,28 +29,45 @@ export default function EnrollModal({ isOpen, onClose, courseTitle }) {
                 </button>
 
                 {/* ── Left Column (Image & Copy) ── */}
-                <div className="relative w-full md:w-5/12 lg:w-1/2 min-h-[300px] md:min-h-[500px] bg-[#0b1b3d] flex flex-col justify-between p-8 xl:p-12 overflow-hidden">
-                    {/* Background effects */}
-                    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-blue-900/40 to-transparent"></div>
+                <div
+                    className="relative w-full md:w-5/12 lg:w-1/2 min-h-[300px] md:min-h-[500px] flex flex-col justify-between p-8 xl:p-12 overflow-hidden bg-gradient-dark"
+                >
+                    {/* Background overlay using primary tint */}
+                    <div
+                        className="absolute top-0 left-0 w-full h-full"
+                        style={{ background: "linear-gradient(to bottom, hsl(var(--primary)/0.25), transparent)" }}
+                    />
 
                     <div className="relative z-10 text-center animate-fade-in">
                         <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight">
-                            Build your career - <span className="text-blue-300 italic block mt-1">AI takes you further!</span>
+                            Build your career -{" "}
+                            <span
+                                className="italic block mt-1"
+                                style={{ color: "hsl(var(--primary) / 0.85)" }}
+                            >
+                                AI takes you further!
+                            </span>
                         </h2>
-                        <p className="text-blue-50 text-sm md:text-base leading-relaxed mb-8 max-w-sm mx-auto">
+                        <p className="text-white/75 text-sm md:text-base leading-relaxed mb-8 max-w-sm mx-auto">
                             Master the skills that matter. By 2030, AI could automate 30% of work hours, making AI-skilled professionals indispensable.
                         </p>
                     </div>
 
-                    {/* Decorative icons wrapping the instructor image area */}
-                    <div className="absolute bottom-1/4 left-8 text-blue-400/50 animate-pulse"><Code2 className="h-10 w-10" /></div>
-                    <div className="absolute top-1/3 right-8 text-purple-400/50 animate-pulse delay-700"><Sparkles className="h-12 w-12" /></div>
-                    <div className="absolute bottom-12 right-12 text-teal-400/50 animate-pulse delay-300"><Cpu className="h-10 w-10" /></div>
+                    {/* Decorative icons */}
+                    <div className="absolute bottom-1/4 left-8 animate-pulse" style={{ color: "hsl(var(--primary)/0.5)" }}>
+                        <Code2 className="h-10 w-10" />
+                    </div>
+                    <div className="absolute top-1/3 right-8 animate-pulse delay-700" style={{ color: "hsl(var(--accent)/0.6)" }}>
+                        <Sparkles className="h-12 w-12" />
+                    </div>
+                    <div className="absolute bottom-12 right-12 animate-pulse delay-300" style={{ color: "hsl(var(--primary)/0.4)" }}>
+                        <Cpu className="h-10 w-10" />
+                    </div>
 
-                    {/* Placeholder for realistic instructor image matching the prompt style */}
-                    <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4/5 max-w-[300px]">
+                    {/* Instructor image */}
+                    <div className="absolute top-[15%] bottom-20 left-1/2 -translate-x-1/2 w-[50vw]">
                         <img
-                            src="https://images.unsplash.com/photo-1556157382-97eda2f9e2bf?q=80&w=800&auto=format&fit=crop"
+                            src={enrollImg}
                             alt="Instructor"
                             className="w-full h-auto object-cover mask-image-bottom drop-shadow-2xl rounded-t-full brightness-110"
                             style={{ maskImage: "linear-gradient(to top, transparent 0%, black 20%)", WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 20%)" }}
@@ -61,7 +79,11 @@ export default function EnrollModal({ isOpen, onClose, courseTitle }) {
                 <div className="w-full md:w-7/12 lg:w-1/2 p-6 md:p-8 lg:p-12 flex flex-col justify-center bg-white">
                     <div className="mb-6">
                         <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">
-                            Get <span className="text-blue-600">1:1 Expert Guidance</span> & <span className="text-blue-600">FREE Roadmap</span> to stay ahead
+                            Get{" "}
+                            <span style={{ color: "hsl(var(--primary))" }}>1:1 Expert Guidance</span>{" "}
+                            &{" "}
+                            <span style={{ color: "hsl(var(--primary))" }}>FREE Roadmap</span>{" "}
+                            to stay ahead
                         </h3>
                         {courseTitle && (
                             <p className="text-sm text-gray-500 font-medium">Enrolling in: <span className="text-gray-900 font-bold">{courseTitle}</span></p>
@@ -77,7 +99,10 @@ export default function EnrollModal({ isOpen, onClose, courseTitle }) {
                                 type="email"
                                 required
                                 placeholder="Enter your Email ID"
-                                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none transition-colors"
+                                style={{ "--tw-ring-color": "hsl(var(--primary))" }}
+                                onFocus={e => { e.target.style.borderColor = "hsl(var(--primary))"; e.target.style.boxShadow = "0 0 0 1px hsl(var(--primary))"; }}
+                                onBlur={e => { e.target.style.borderColor = ""; e.target.style.boxShadow = ""; }}
                                 value={formData.email}
                                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                             />
@@ -91,7 +116,9 @@ export default function EnrollModal({ isOpen, onClose, courseTitle }) {
                                     type="text"
                                     required
                                     placeholder="Enter your Full Name"
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none transition-colors"
+                                    onFocus={e => { e.target.style.borderColor = "hsl(var(--primary))"; e.target.style.boxShadow = "0 0 0 1px hsl(var(--primary))"; }}
+                                    onBlur={e => { e.target.style.borderColor = ""; e.target.style.boxShadow = ""; }}
                                     value={formData.fullName}
                                     onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                                 />
@@ -104,7 +131,9 @@ export default function EnrollModal({ isOpen, onClose, courseTitle }) {
                                     type="text"
                                     required
                                     placeholder="Year of Graduation"
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none transition-colors"
+                                    onFocus={e => { e.target.style.borderColor = "hsl(var(--primary))"; e.target.style.boxShadow = "0 0 0 1px hsl(var(--primary))"; }}
+                                    onBlur={e => { e.target.style.borderColor = ""; e.target.style.boxShadow = ""; }}
                                     value={formData.graduationYear}
                                     onChange={(e) => setFormData({ ...formData, graduationYear: e.target.value })}
                                 />
@@ -117,7 +146,9 @@ export default function EnrollModal({ isOpen, onClose, courseTitle }) {
                                 <label className="block text-sm font-bold text-gray-900 mb-1.5">Job Title <span className="text-red-500">*</span></label>
                                 <select
                                     required
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-600 bg-white"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none transition-colors text-gray-600 bg-white"
+                                    onFocus={e => { e.target.style.borderColor = "hsl(var(--primary))"; e.target.style.boxShadow = "0 0 0 1px hsl(var(--primary))"; }}
+                                    onBlur={e => { e.target.style.borderColor = ""; e.target.style.boxShadow = ""; }}
                                     value={formData.jobTitle}
                                     onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
                                 >
@@ -134,13 +165,15 @@ export default function EnrollModal({ isOpen, onClose, courseTitle }) {
                                 <label className="block text-sm font-bold text-gray-900 mb-1.5">Program <span className="text-red-500">*</span></label>
                                 <select
                                     required
-                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 text-gray-600 bg-white"
+                                    className="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none transition-colors text-gray-600 bg-white"
+                                    onFocus={e => { e.target.style.borderColor = "hsl(var(--primary))"; e.target.style.boxShadow = "0 0 0 1px hsl(var(--primary))"; }}
+                                    onBlur={e => { e.target.style.borderColor = ""; e.target.style.boxShadow = ""; }}
                                     value={formData.program}
                                     onChange={(e) => setFormData({ ...formData, program: e.target.value })}
                                 >
                                     <option value="" disabled>Select Program *</option>
                                     <option value="full_stack">Full Stack Development</option>
-                                    <option value="data_science">Data Science & ML</option>
+                                    <option value="data_science">Data Science &amp; ML</option>
                                     <option value="cloud">Cloud Computing</option>
                                 </select>
                             </div>
@@ -158,12 +191,14 @@ export default function EnrollModal({ isOpen, onClose, courseTitle }) {
                                     type="tel"
                                     required
                                     placeholder="Enter your mobile number"
-                                    className="w-full rounded-r-lg border border-gray-300 px-4 py-3 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                                    className="w-full rounded-r-lg border border-gray-300 px-4 py-3 text-sm outline-none transition-colors"
+                                    onFocus={e => { e.target.style.borderColor = "hsl(var(--primary))"; e.target.style.boxShadow = "0 0 0 1px hsl(var(--primary))"; }}
+                                    onBlur={e => { e.target.style.borderColor = ""; e.target.style.boxShadow = ""; }}
                                     value={formData.mobileNumber}
                                     onChange={(e) => setFormData({ ...formData, mobileNumber: e.target.value })}
                                 />
                             </div>
-                            <p className="text-xs text-blue-500 mt-2 font-medium">
+                            <p className="text-xs mt-2 font-medium" style={{ color: "hsl(var(--primary))" }}>
                                 You'll receive an OTP on this number for verification
                             </p>
                         </div>
@@ -174,7 +209,8 @@ export default function EnrollModal({ isOpen, onClose, courseTitle }) {
 
                         <button
                             type="submit"
-                            className="w-full bg-[#ef234d] hover:bg-[#d61e43] text-white font-bold text-lg py-4 rounded-lg mt-6 transition-colors shadow-md hover:shadow-lg"
+                            className="w-full text-white font-bold text-lg py-4 rounded-lg mt-6 transition-all shadow-md hover:shadow-lg hover:opacity-90 active:scale-[0.98]"
+                            style={{ background: "hsl(var(--primary))" }}
                         >
                             Enroll Now
                         </button>
