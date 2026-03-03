@@ -1,149 +1,292 @@
-import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Search, SlidersHorizontal, Star, Clock, X, Users } from "lucide-react";
+import {
+    BookOpen, Briefcase, Mic, ClipboardCheck,
+    Users, ArrowRight, CheckCircle2, MonitorPlay
+} from "lucide-react";
 import Layout from "@/components/layout/Layout";
 
-import course1 from "@/assets/course-1.jpg";
-import course2 from "@/assets/course-2.jpg";
-import course3 from "@/assets/course-3.jpg";
-import course4 from "@/assets/course-4.jpg";
-import course5 from "@/assets/course-5.jpg";
-import course6 from "@/assets/course-6.jpg";
-import course7 from "@/assets/course-7.jpg";
-import course8 from "@/assets/course-8.jpg";
-import course9 from "@/assets/course-9.jpg";
-import instructor2 from "@/assets/instructor-2.jpg";
+import individualsHero from "@/assets/individuals-hero.png";
 
-const CATEGORIES = ["All", "Development", "Data Science", "Design", "Cloud", "Marketing", "Security"];
-const LEVELS = ["All", "Beginner", "Intermediate", "Advanced"];
+const fadeUp = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+};
 
-const allCourses = [
-    { image: course1, category: "Development", level: "Intermediate", title: "Full-Stack Web Development with React & Node.js", rating: 4.8, reviews: 2340, weeks: 12, price: 79, originalPrice: 179, isFree: false },
-    { image: course2, category: "Data Science", level: "Beginner", title: "Data Science & Machine Learning Fundamentals", rating: 4.9, reviews: 3120, weeks: 10, price: 0, originalPrice: 0, isFree: true },
-    { image: course3, category: "Design", level: "Beginner", title: "UI/UX Design Masterclass", rating: 4.7, reviews: 1890, weeks: 8, price: 59, originalPrice: 129, isFree: false },
-    { image: course4, category: "Cloud", level: "Intermediate", title: "AWS Cloud Practitioner & Solutions Architect", rating: 4.6, reviews: 2100, weeks: 14, price: 89, originalPrice: 199, isFree: false },
-    { image: course5, category: "Marketing", level: "Beginner", title: "Digital Marketing Complete Bootcamp 2024", rating: 4.5, reviews: 1760, weeks: 6, price: 0, originalPrice: 0, isFree: true },
-    { image: course6, category: "Security", level: "Advanced", title: "Ethical Hacking & Cybersecurity Masterclass", rating: 4.8, reviews: 980, weeks: 16, price: 99, originalPrice: 219, isFree: false },
-    { image: course7, category: "Development", level: "Beginner", title: "Python Programming – Zero to Hero", rating: 4.9, reviews: 4210, weeks: 9, price: 0, originalPrice: 0, isFree: true },
-    { image: course8, category: "Data Science", level: "Advanced", title: "Deep Learning & Neural Networks with TensorFlow", rating: 4.7, reviews: 1540, weeks: 18, price: 89, originalPrice: 189, isFree: false },
-    { image: course9, category: "Design", level: "Intermediate", title: "Motion Design & After Effects Masterclass", rating: 4.6, reviews: 1230, weeks: 10, price: 69, originalPrice: 149, isFree: false },
+const individualServices = [
+    {
+        id: "training",
+        icon: MonitorPlay,
+        title: "Industry-Focused Training Programs",
+        desc: "Gain practical, job-ready skills in high-demand technologies, Our training includes hands-on labs, real-world projects, and mentorship from industry professionals.",
+        color: "text-violet-500",
+        bg: "bg-violet-500/10",
+        border: "border-violet-500/20",
+    },
+    {
+        id: "internships",
+        icon: Briefcase,
+        title: "Internship Programs",
+        desc: "Work on real-time projects and gain industry exposure. Live project experience, Mentorship from experienced professionals, Internship certificate. Internships help bridge the gap between academic learning and industry requirements.",
+        color: "text-amber-500",
+        bg: "bg-amber-500/10",
+        border: "border-amber-500/20",
+    },
+    {
+        id: "mock-interviews",
+        icon: Mic,
+        title: "Mock Interviews",
+        desc: "Prepare confidently for technical and HR interviews, Technical interview simulation, HR interview preparation, Resume review and feedback.",
+        color: "text-sky-500",
+        bg: "bg-sky-500/10",
+        border: "border-sky-500/20",
+    },
+    {
+        id: "assessments",
+        icon: ClipboardCheck,
+        title: "Skill Assessments",
+        desc: "Evaluate your readiness and identify improvement areas through Technical skill assessments, Aptitude tests, Coding assessments, AI-based performance reports, Career readiness evaluation.",
+        color: "text-rose-500",
+        bg: "bg-rose-500/10",
+        border: "border-rose-500/20",
+    },
+    {
+        id: "placement",
+        icon: Users,
+        title: "Placement Support",
+        desc: "We support your job search through structured placement assistance like Resume preparation support, Job referrals and placement drives, Interview scheduling support.",
+        color: "text-emerald-500",
+        bg: "bg-emerald-500/10",
+        border: "border-emerald-500/20",
+    },
 ];
 
-const LEVEL_BADGE = {
-    Beginner: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-    Intermediate: "bg-amber-500/20   text-amber-400   border border-amber-500/30",
-    Advanced: "bg-rose-500/20    text-rose-400    border border-rose-500/30",
-};
-const CAT_COLOR = { Development: "text-cyan-400", "Data Science": "text-violet-400", Design: "text-emerald-400", Cloud: "text-sky-400", Marketing: "text-amber-400", Security: "text-rose-400" };
-
-function CourseCard({ course, index }) {
-    return (
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: index * 0.04 }}>
-            <Link to={`/course/${index + 1}`} state={{ course }} className="group block h-full">
-                <div className="h-full overflow-hidden rounded-2xl bg-card border border-border/40 shadow-md hover:shadow-xl hover:-translate-y-1 hover:border-primary/30 transition-all duration-300 flex flex-col">
-                    <div className="relative overflow-hidden">
-                        <img src={course.image} alt={course.title} className="h-44 w-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                        {course.isFree && <span className="absolute top-3 right-3 rounded-full bg-accent/90 px-2.5 py-0.5 text-[10px] font-bold text-accent-foreground uppercase">FREE</span>}
-                    </div>
-                    <div className="flex flex-col flex-1 p-5">
-                        <p className={`mb-1 text-xs font-bold tracking-widest uppercase ${CAT_COLOR[course.category] ?? "text-primary"}`}>{course.category}</p>
-                        <h3 className="mb-3 text-sm font-semibold leading-snug text-foreground line-clamp-2 group-hover:text-primary transition-colors">{course.title}</h3>
-                        <div className="mb-4 flex items-center gap-3">
-                            <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${LEVEL_BADGE[course.level]}`}>{course.level}</span>
-                            <span className="flex items-center gap-1 text-xs text-muted-foreground"><Clock className="h-3.5 w-3.5" />{course.weeks} weeks</span>
-                        </div>
-                        <div className="mt-auto flex items-center justify-between border-t border-border/40 pt-3">
-                            <div className="flex items-center gap-1">
-                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                                <span className="text-sm font-semibold text-foreground">{course.rating}</span>
-                                <span className="text-xs text-muted-foreground">({course.reviews.toLocaleString()})</span>
-                            </div>
-                            <span className="text-sm font-bold text-primary">{course.isFree ? "FREE" : `₹${(course.price * 83).toLocaleString()}`} →</span>
-                        </div>
-                    </div>
-                </div>
-            </Link>
-        </motion.div>
-    );
-}
-
 export default function ForIndividuals() {
-    const [search, setSearch] = useState("");
-    const [category, setCategory] = useState("All");
-    const [level, setLevel] = useState("All");
-    const [priceFilter, setPriceFilter] = useState("All"); // All | Free | Paid
-    const [showFilters, setShowFilters] = useState(false);
-
-    const filtered = useMemo(() => allCourses.filter((c) => {
-        const matchCat = category === "All" || c.category === category;
-        const matchLevel = level === "All" || c.level === level;
-        const matchPrice = priceFilter === "All" || (priceFilter === "Free" ? c.isFree : !c.isFree);
-        const matchQ = c.title.toLowerCase().includes(search.toLowerCase());
-        return matchCat && matchLevel && matchPrice && matchQ;
-    }), [search, category, level, priceFilter]);
-
-    const hasActive = category !== "All" || level !== "All" || search !== "" || priceFilter !== "All";
-    const clear = () => { setSearch(""); setCategory("All"); setLevel("All"); setPriceFilter("All"); };
-
     return (
         <Layout>
-            <section className="bg-gradient-hero py-14">
+            {/* ═══════════════════════════════════
+          1. HERO SECTION (Split Layout)
+      ═══════════════════════════════════ */}
+            <section className="bg-muted/30 overflow-hidden">
+                <div className="grid grid-cols-1 lg:grid-cols-2 min-h-[600px]">
+
+                    {/* Left Content */}
+                    <div className="flex flex-col justify-center px-6 py-16 lg:px-16 xl:px-24">
+                        <motion.div initial="hidden" animate="visible" variants={fadeUp}>
+                            {/* <div className="flex items-center gap-2 mb-6 text-primary font-semibold tracking-wide uppercase text-sm">
+                                <span className="w-8 h-[2px] bg-primary"></span>
+                                <span>Individuals Page</span>
+                            </div> */}
+
+                            <h1 className="mb-6 text-4xl sm:text-5xl lg:text-[56px] font-bold leading-[1.1] text-foreground tracking-tight">
+                                Build Your Career with Industry-Ready Skills
+                            </h1>
+
+                            <p className="mb-8 text-lg leading-relaxed text-muted-foreground max-w-[540px]">
+                                At SkillMedha, we help individuals transform their careers through hands-on training, real-world internships, career assessments, and placement support. Our programs are designed by industry experts to ensure you gain practical skills required by employers in today's competitive job market.
+                            </p>
+
+                            <p className="mb-10 text-xl font-medium text-foreground">
+                                Start your career journey with confidence.
+                            </p>
+
+                            <div className="flex flex-wrap gap-4">
+                                <Link
+                                    onClick={() => setIsEnrollModalOpen(true)}
+                                    className="rounded-lg bg-primary px-8 py-4 text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:-translate-y-0.5"
+                                >
+                                    Enroll Now
+                                </Link>
+                                <Link
+                                    to="/courses"
+                                    className="rounded-lg border-2 border-foreground px-8 py-4 text-base font-semibold text-foreground transition-all hover:bg-foreground hover:text-background"
+                                >
+                                    Explore Programs
+                                </Link>
+                            </div>
+                        </motion.div>
+                    </div>
+
+                    {/* Right Image Container */}
+                    <div className="relative hidden lg:block h-full min-h-[600px]">
+                        <motion.div
+                            className="absolute inset-0 w-full h-full"
+                            initial={{ opacity: 0, x: 50 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
+                        >
+                            <img
+                                src={individualsHero}
+                                alt="Students learning together"
+                                className="absolute inset-0 w-full h-full object-cover object-center"
+                            />
+                            {/* Optional slight gradient overlay if text readability was an issue, but since it's a split section, no overlay is needed on the image */}
+                        </motion.div>
+                    </div>
+
+                    {/* Mobile Image (Visible only on small screens) */}
+                    <div className="block lg:hidden w-full h-[300px] sm:h-[400px]">
+                        <img
+                            src={individualsHero}
+                            alt="Students learning together"
+                            className="w-full h-full object-cover object-center"
+                        />
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════
+          2. OUR SERVICES SECTION
+      ═══════════════════════════════════ */}
+            <section className="py-24 bg-white relative">
                 <div className="container mx-auto px-4 lg:px-8">
-                    <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-                        <div className="flex items-center gap-2 mb-3">
-                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-400/20"><Users className="h-4 w-4 text-violet-400" /></div>
-                            <span className="text-xs font-bold uppercase tracking-widest text-violet-400">Individual Learning</span>
+                    <motion.div
+                        className="mb-16 text-center max-w-3xl mx-auto"
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true, margin: "-100px" }}
+                        variants={fadeUp}
+                    >
+                        <h2 className="mb-4 text-3xl md:text-4xl font-bold text-foreground">Our Services for Individuals</h2>
+                        <div className="h-1.5 w-20 bg-primary mx-auto rounded-full mb-6 relative">
+                            <div className="absolute w-4 h-4 bg-accent rounded-full -right-2 -top-[5px]"></div>
                         </div>
-                        <h1 className="text-4xl font-bold text-primary-dark-foreground mb-2">Explore Courses</h1>
-                        <p className="text-sm text-primary-dark-foreground/60 max-w-lg">From free beginner tracks to advanced premium programmes — build your personalised career roadmap.</p>
+                        <p className="text-base text-muted-foreground">
+                            Comprehensive support designed to take you from a learner to an industry professional.
+                        </p>
                     </motion.div>
+
+                    {/* Services Grid layout */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {individualServices.map((service, index) => (
+                            <motion.div
+                                key={service.id}
+                                className={`group relative overflow-hidden rounded-2xl bg-card border ${service.border} transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:-translate-y-1 ${index >= 3 ? 'lg:col-span-1.5' : ''}`}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: "-50px" }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                            >
+                                {/* Background Hover Decoration */}
+                                <div className={`absolute -right-10 -top-10 h-32 w-32 rounded-full ${service.bg} opacity-50 blur-2xl transition-all duration-500 group-hover:scale-150`}></div>
+
+                                <div className="relative p-8 h-full flex flex-col">
+                                    {/* Icon Header */}
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${service.bg} shadow-sm border border-white/20`}>
+                                            <service.icon className={`h-8 w-8 ${service.color}`} />
+                                        </div>
+                                        <span className="text-5xl font-extrabold text-muted/30 select-none">
+                                            0{index + 1}
+                                        </span>
+                                    </div>
+
+                                    {/* Content */}
+                                    <h3 className="text-xl font-bold text-foreground mb-4 group-hover:text-primary transition-colors">
+                                        {service.title}
+                                    </h3>
+
+                                    {/* Parsing description to make lists looking better */}
+                                    <div className="text-sm text-muted-foreground leading-relaxed flex-1">
+                                        {service.desc.includes(',') ? (
+                                            <ul className="space-y-3 mt-2">
+                                                {service.desc.split(/,\s*/).map((point, i) => (
+                                                    <li key={i} className="flex items-start gap-2">
+                                                        <CheckCircle2 className={`h-4 w-4 shrink-0 mt-0.5 ${service.color}`} />
+                                                        <span>{point}</span>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p>{service.desc}</p>
+                                        )}
+                                    </div>
+
+                                    {/* Bottom linking */}
+                                    <div className="mt-8 pt-4 border-t border-border/60">
+                                        <Link to="/contact" className={`inline-flex items-center text-sm font-semibold hover:gap-2 transition-all gap-1 ${service.color}`}>
+                                            Learn more <ArrowRight className="h-4 w-4" />
+                                        </Link>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+
+                    {/* Special alignment for the last two items to be centered if there are 5 total and grid is 3 */}
+                    <style dangerouslySetInnerHTML={{
+                        __html: `
+            @media (min-width: 1024px) {
+              .grid-cols-3 > div:nth-child(4) {
+                grid-column: 1 / span 1;
+                margin-left: 50%;
+              }
+              .grid-cols-3 > div:nth-child(5) {
+                grid-column: 2 / span 1;
+                margin-left: 50%;
+              }
+            }
+            @media (min-width: 1280px) {
+              /* For wider screens we might want standard centering */
+               .grid-cols-3 > div:nth-child(4) {
+                grid-column: 1 / span 1;
+                margin-left: 50%;
+              }
+              .grid-cols-3 > div:nth-child(5) {
+                grid-column: 2 / span 1;
+                margin-left: 50%;
+              }
+            }
+          `}} />
                 </div>
             </section>
 
-            <section className="sticky top-16 z-20 bg-background/95 backdrop-blur border-b border-border/40 py-4 shadow-sm">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="relative flex-1 max-w-sm">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <input type="text" placeholder="Search courses..." value={search} onChange={(e) => setSearch(e.target.value)} className="w-full rounded-lg border border-border bg-card pl-9 pr-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40" />
-                            {search && <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"><X className="h-3.5 w-3.5" /></button>}
-                        </div>
-                        <button onClick={() => setShowFilters(!showFilters)} className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors ${showFilters ? "border-primary bg-primary/10 text-primary" : "border-border bg-card text-foreground hover:border-primary/50"}`}>
-                            <SlidersHorizontal className="h-4 w-4" /> Filters {hasActive && <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />}
-                        </button>
-                        {hasActive && <button onClick={clear} className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground border border-border transition-colors"><X className="h-3 w-3" /> Clear</button>}
-                    </div>
-                    <div className="flex flex-wrap gap-6">
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Category</span>
-                            {CATEGORIES.map((cat) => <button key={cat} onClick={() => setCategory(cat)} className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${category === cat ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}>{cat}</button>)}
-                        </div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Level</span>
-                            {LEVELS.map((lvl) => <button key={lvl} onClick={() => setLevel(lvl)} className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${level === lvl ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}>{lvl}</button>)}
-                        </div>
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Price</span>
-                            {["All", "Free", "Paid"].map((p) => <button key={p} onClick={() => setPriceFilter(p)} className={`rounded-full px-3 py-1 text-xs font-medium transition-all duration-200 ${priceFilter === p ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" : "bg-card border border-border text-muted-foreground hover:border-primary/50 hover:text-foreground"}`}>{p}</button>)}
-                        </div>
+            {/* ═══════════════════════════════════
+          3. CTA SECTION
+      ═══════════════════════════════════ */}
+            <section className="py-20 relative overflow-hidden">
+                <div className="absolute inset-0 bg-primary"></div>
+                {/* Background Patterns */}
+                <div className="absolute top-0 right-0 opacity-10">
+                    <svg width="400" height="400" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="50" cy="50" r="40" stroke="white" strokeWidth="2" strokeDasharray="4 4" />
+                        <circle cx="50" cy="50" r="30" stroke="white" strokeWidth="2" />
+                    </svg>
+                </div>
+
+                <div className="container mx-auto px-4 lg:px-8 relative z-10">
+                    <div className="max-w-3xl mx-auto text-center">
+                        <motion.h2
+                            className="text-3xl md:text-5xl font-bold text-white mb-6"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                        >
+                            Ready to Transform Your Career?
+                        </motion.h2>
+                        <motion.p
+                            className="text-white/80 text-lg mb-10 max-w-2xl mx-auto"
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.1 }}
+                        >
+                            Join thousands of individuals who have successfully accelerated their professional growth with SkillMedha's industry-aligned programs.
+                        </motion.p>
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 }}
+                        >
+                            <Link to="/signup" className="inline-flex items-center justify-center rounded-full bg-background px-8 py-4 text-base font-bold text-primary shadow-lg transition-transform hover:scale-105">
+                                Join SkillMedha Today
+                            </Link>
+                        </motion.div>
                     </div>
                 </div>
             </section>
 
-            <section className="py-10">
-                <div className="container mx-auto px-4 lg:px-8">
-                    <p className="mb-6 text-sm text-muted-foreground"><span className="font-semibold text-foreground">{filtered.length}</span> course{filtered.length !== 1 ? "s" : ""} found</p>
-                    {filtered.length > 0
-                        ? <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">{filtered.map((c, i) => <CourseCard key={i} course={c} index={i} />)}</div>
-                        : <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center py-20 text-center">
-                            <Search className="h-12 w-12 text-muted-foreground/30 mb-4" />
-                            <p className="text-lg font-semibold text-foreground mb-1">No courses found</p>
-                            <button onClick={clear} className="mt-3 rounded-lg bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 transition-colors">Clear Filters</button>
-                        </motion.div>}
-                </div>
-            </section>
         </Layout>
     );
 }

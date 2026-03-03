@@ -14,6 +14,7 @@ import ForIndividuals from "./pages/ForIndividuals";
 import ForCorporates from "./pages/ForCorporates";
 import ForCampus from "./pages/ForCampus";
 import KnowledgeHub from "./pages/KnowledgeHub";
+import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 import ThemeColorPicker from "./components/ui/ThemeColorPicker";
 
@@ -40,6 +41,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/courses" element={<Courses />} />
           <Route path="/course/:id" element={<CourseDetails />} />
+          <Route path="/checkout" element={<Checkout />} />
           <Route path="/about" element={<About />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/free-trainings" element={<FreeTrainings />} />

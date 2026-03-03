@@ -127,7 +127,7 @@ const baseCourses = [
         title: "UI/UX Design Masterclass",
         rating: 4.7, reviews: 1890, weeks: 8,
         instructor: "Jane Cooper", instructorAvatar: instructor2,
-        price: 59, originalPrice: 129, badge: "BEST SELLER", badgeColor: "bg-primary",
+        price: 0, originalPrice: 129, badge: "FREE", badgeColor: "bg-emerald-500",
     },
     {
         id: 4,
@@ -143,7 +143,7 @@ const baseCourses = [
         title: "Digital Marketing Complete Bootcamp 2024",
         rating: 4.5, reviews: 1760, weeks: 6,
         instructor: "Jenny Wilson", instructorAvatar: instructor2,
-        price: 49, originalPrice: 99, badge: "BEST SELLER", badgeColor: "bg-primary",
+        price: 0, originalPrice: 99, badge: "FREE", badgeColor: "bg-emerald-500",
     },
     {
         id: 6,
@@ -159,7 +159,7 @@ const baseCourses = [
         title: "Python Programming – Zero to Hero",
         rating: 4.9, reviews: 4210, weeks: 9,
         instructor: "Ali Tufan", instructorAvatar: instructor2,
-        price: 59, originalPrice: 129, badge: "NEW", badgeColor: "bg-accent",
+        price: 0, originalPrice: 129, badge: "FREE", badgeColor: "bg-emerald-500",
     },
     {
         id: 8,
