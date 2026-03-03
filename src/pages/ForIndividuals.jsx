@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import {
     BookOpen, Briefcase, Mic, ClipboardCheck,
@@ -7,6 +8,7 @@ import {
 import Layout from "@/components/layout/Layout";
 
 import individualsHero from "@/assets/individuals-hero.png";
+import EnrollModal from "@/components/EnrollModal";
 
 const fadeUp = {
     hidden: { opacity: 0, y: 30 },
@@ -62,6 +64,8 @@ const individualServices = [
 ];
 
 export default function ForIndividuals() {
+
+    const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
     return (
         <Layout>
             {/* ═══════════════════════════════════
@@ -91,12 +95,12 @@ export default function ForIndividuals() {
                             </p>
 
                             <div className="flex flex-wrap gap-4">
-                                <Link
+                                <button
                                     onClick={() => setIsEnrollModalOpen(true)}
                                     className="rounded-lg bg-primary px-8 py-4 text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:-translate-y-0.5"
                                 >
                                     Enroll Now
-                                </Link>
+                                </button>
                                 <Link
                                     to="/courses"
                                     className="rounded-lg border-2 border-foreground px-8 py-4 text-base font-semibold text-foreground transition-all hover:bg-foreground hover:text-background"
@@ -287,6 +291,11 @@ export default function ForIndividuals() {
                 </div>
             </section>
 
+            <EnrollModal
+                isOpen={isEnrollModalOpen}
+                onClose={() => setIsEnrollModalOpen(false)}
+            // courseTitle={course.title}
+            />
         </Layout>
     );
 }
