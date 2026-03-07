@@ -473,9 +473,9 @@ export default function Index() {
             <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeUp}>
               <div className="space-y-6">
                 {[
-                  { icon: Mail, label: "Email", value: "hello@skillmedha.com" },
-                  { icon: Phone, label: "Phone", value: "+91 98765 43210" },
-                  { icon: MapPin, label: "Address", value: "Hyderabad, Telangana, India" },
+                  { icon: Mail, label: "Email", value: "info@skillmedha.com" },
+                  { icon: Phone, label: "Phone", value: "+91 8466006664" },
+                  { icon: MapPin, label: "Address", value: "Visakhaptnam, Andhra Pradesh, India" },
                 ].map(({ icon: Icon, label, value }) => (
                   <div key={label} className="flex items-start gap-4">
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-primary/20">
